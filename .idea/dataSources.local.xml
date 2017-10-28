@@ -8,5 +8,11 @@
       <auth-required>false</auth-required>
       <introspection-schemas>*:*</introspection-schemas>
     </data-source>
+    <data-source name="identifier.sqlite" uuid="e6fdc2e1-f6ca-489a-8c37-97e1e8f002a7">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <secret-storage>master_key</secret-storage>
+      <auth-required>false</auth-required>
+      <first-sync>true</first-sync>
+    </data-source>
   </component>
 </project>

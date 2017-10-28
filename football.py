@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request
 from crudClass import Team
-import sqlite3
+import sqlite3 , os
 
 
 app = Flask(__name__)
@@ -13,18 +13,21 @@ def hello_world():
 
 @app.route("/editTeam/<string:teamName>/", methods=["GET", "POST"])
 def editTeam(teamName):
-    conn = sqlite3.connect("../PycharmProjects/football/football.db")
+    conn = sqlite3.connect("./football/football.db")
     if request.method == "GET":
         cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?" , (teamName , )).fetchone()
-        b = ["teamName", "teamLogo", "country",
+        print(os.getcwd())
+        b = ["teamName",
+             "teamLogo",
              "squadPic",
              "founded",
              "homeGround",
              "teamCost",
-             "teamOwner",
-             "teamSponsor",
-             "teamCoach",
              "teamWebsite",
+             "teamOwner",
+             "teamCoach",
+             "teamSponsor",
+             "country",
              "about"]
         teamInfo = dict(zip(b, cursor))
         print(teamInfo)
@@ -49,7 +52,7 @@ def editTeam(teamName):
                       about=about,
                       operation="update")
         print(request.form)
-        return redirect(url_for("showTeam"))
+        return redirect(url_for("hello_world"))
 
 
 @app.route("/addTeam/", methods=["POST", "GET"])
