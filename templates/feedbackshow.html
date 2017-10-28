@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Team Information</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+{% for feed in feedback %}
+<ul class="collection">
+    <li class="collection-item avatar">
+        <i class="material-icons circle">mood</i>
+        <span class="title">Name :- {{feed['name']}}</span>
+        <ul>
+            <li>Email :- {{feed['email']}}</li>
+            <li>Presentation :- {{feed['presentation']}}</li>
+            <li>collaboration of ideas :- {{feed['idea']}}</li>
+            <li>project objectives  :- {{feed['objective']}}</li>
+            <li>Suggestions :- {{feed['review']}}</li>
+        </ul>
+    </li>
+</ul>
+
+{% endfor %}
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js">
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        {% for team_infor in teamInformation %}
+        <div class="col s4 ">
+            <div class="card-panel hoverable">
+                <div class="card">
+                    <div class="card-image waves-effect waves-block waves-light">
+                        <a href="{{url_for('teamPlayers' , teamName=team_infor['teamName'])}}"> <img
+                                src="{{team_infor['teamLogo']}}"></a>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-title activator grey-text text-darken-4">{{team_infor["teamName"]}}<i
+                                class="material-icons right">more_vert</i></span>
+
+                        <a href="{{url_for('viewTeam' , teamName=team_infor['teamName'])}}"
+                           class="waves-effect waves-teal btn-flat">View</a>
+                        <a href="{{url_for('editTeam' , teamName=team_infor['teamName'])}}"
+                           class="waves-effect waves-teal btn-flat">Update</a>
+                        <form action="{{url_for('deleteTeam', teamName=team_infor['teamName'])}}" method="post">
+                            <input class="waves-effect waves-teal btn-flat" type="submit" value="Delete"/>
+                        </form>
+                    </div>
+                    <div class="card-reveal">
+                        <span class="card-title grey-text text-darken-4">About<i
+                                class="material-icons right">close</i></span>
+                        <p>{{team_infor['about']}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+<div class="fixed-action-btn">
+    <a href="{{url_for('addTeam')}}" class="btn-floating btn-large waves-effect waves-light teal">
+        <i class="material-icons">add</i>
+    </a>
+</div>
+{% endblock %}
