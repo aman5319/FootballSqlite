@@ -52,31 +52,6 @@ def showTeam():
 
 
 
-@app.route("/editTeam/<string:teamName>/", methods=["GET", "POST"])
-def editTeam(teamName):
-    if request.method == "GET":
-        a = db.info.find_one({"teamName": teamName}, {"players": 0, "_id": 0, "fixture": 0})
-        return render_template("teamEditForm.html", teamInfo=a)
-    elif request.method == "POST":
-        t = Team(teamName)
-        about = request.form.get("teamAbout", None)
-        if about == "" or about == " ":
-            about = "This team is prominent team in league"
-        t.insert_team(teamLogo=request.form.get("teamLogo", None),
-                      squadpic=request.form.get("squadPic", None),
-                      founded=request.form.get("founded", None),
-                      homeground=request.form.get("homeGround", None),
-                      teamcost=eval(request.form.get("teamCost", 0)),
-                      teamWebsite=request.form.get("teamWebsite", None),
-                      teamowner=request.form.get("teamOwner", None),
-                      teamcoach=request.form.get("teamCoach", None),
-                      sponser=request.form.get("teamSponsor", None),
-                      country=request.form.get("country", None),
-                      about=about,
-                      operation="update")
-        print(request.form)
-        return redirect(url_for("showTeam"))
-
 
 @app.route("/feedback/", methods=["GET", "POST"])
 def feedback():
@@ -152,8 +127,8 @@ def addPlayers(teamName):
         return render_template("playerAddForm.html")
 
 
-@app.route("/editplayers/<string:teamName>/<string:playerName>", methods=["GET", "POST"])
-def editPlayers(teamName, playerName):
+@app.route("/editplayers/<string:teamName>/<int:playerId>", methods=["GET", "POST"])
+def editPlayers(teamName, playerId):
     if request.method == "POST":
         t = Team(teamName)
         about = request.form.get("about", None)
@@ -192,18 +167,18 @@ def editPlayers(teamName, playerName):
         return render_template("playerEditForm.html", teamPlayerData=abc, mydict=mydict, target=abc["playerPosition"])
 
 
-@app.route("/deleteplayers/<string:teamName>/<string:playerName>", methods=["POST"])
-def deletePlayers(teamName, playerName):
+@app.route("/deleteplayers/<string:teamName>/<string:playerId>", methods=["POST"])
+def deletePlayers(teamName, playerId):
     if request.method == "POST":
-        db.info.update_one({"teamName": teamName}, {"$pull": {"players": {"playerName": playerName}}})
+        db.info.update_one({"teamName": teamName}, {"$pull": {"players": {"playerName": playerId}}})
         return redirect(url_for("teamPlayers", teamName=teamName))
 
 
-@app.route("/viewPlayer/<string:teamName>/<string:playerName>")
-def viewPlayer(teamName, playerName):
+@app.route("/viewPlayer/<string:teamName>/<int:playerId>")
+def viewPlayer(teamName, playerId):
     a = db.info.aggregate([
         {"$unwind": "$players"},
-        {"$match": {"teamName": teamName, "players.playerName": playerName}},
+        {"$match": {"teamName": teamName, "players.playerName": playerId}},
         {"$project": {"players": 1, "_id": 0, "teamLogo": 1}}
     ], useCursor=False)
     abc = ""
