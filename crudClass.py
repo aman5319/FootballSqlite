@@ -21,6 +21,8 @@ class Team:
         self.teamAbout = about
 
         if operation == "insert":
+            self.conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+
             self.conn.execute('''INSERT INTO TEAM(TEAM_NAME ,
                                                     TEAM_LOGO_URL ,
                                                SQUAD_PIC_URL ,
@@ -50,6 +52,8 @@ class Team:
             self.conn.commit()
             self.conn.close()
         elif operation == "update":
+            self.conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+
             self.conn.execute("""UPDATE TEAM SET
                                                 TEAM_LOGO_URL=? ,
                                                SQUAD_PIC_URL=?,
@@ -73,5 +77,76 @@ class Team:
                                self.sponser,
                                self.country,
                                self.teamAbout, self.teamName))
+            self.conn.commit()
+            self.conn.close()
+
+    def insertPlayer(self, playername, country, age, photo, dateofbirth, numberofgoals, playerposition, playercost,
+                     jerseynum, about, operation, oldPlayerid):
+        self.playerName = playername
+        self.country = country
+        self.age = eval(age)
+        self.jersyNum = eval(jerseynum)
+        self.photograph = photo
+        self.cost = eval(playercost)
+        self.playingPosition = playerposition
+        self.dateOfBirth = dateofbirth
+        self.numberofgoals = eval(numberofgoals)
+        self.about = about
+
+        if operation == "insert":
+            self.conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+            self.conn.execute('''INSERT INTO PLAYER( 
+                 TEAM_NAME,
+                 PLAYER_NAME,
+                 COUNTRY,
+                 AGE,
+                 PLAYER_PHOTOGRAPH_URL,
+                 DATE_OF_BIRTH,
+                 NUMBER_OF_GOALS,
+                 PLAYER_POSITION,
+                 PLAYER_COST,
+                 JERSEY_NUMBER,
+                 PLAYER_ABOUT) VALUES(?,?,?,?,?,?,?,?,?,?,?)''',
+                              (self.teamName,
+                               self.playerName,
+                               self.country,
+                               self.age,
+                               self.photograph,
+                               self.dateOfBirth,
+                               self.numberofgoals,
+                               self.playingPosition,
+                               self.cost,
+                               self.jersyNum,
+                               self.about
+                               ))
+            self.conn.commit()
+            self.conn.close()
+        elif operation == "update":
+            self.conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+            self.conn.execute('''UPDATE PLAYER SET
+ 
+                 PLAYER_NAME=?,
+                 COUNTRY=?,
+                 AGE=?,
+                 PLAYER_PHOTOGRAPH_URL=?,
+                 DATE_OF_BIRTH=?,
+                 NUMBER_OF_GOALS=?,
+                 PLAYER_POSITION=?,
+                 PLAYER_COST=?,
+                 JERSEY_NUMBER=?,
+                 PLAYER_ABOUT=? WHERE PLAYER_ID =?''',
+                              (
+                                  self.playerName,
+                                  self.country,
+                                  self.age,
+                                  self.photograph,
+                                  self.dateOfBirth,
+                                  self.numberofgoals,
+                                  self.playingPosition,
+                                  self.cost,
+                                  self.jersyNum,
+                                  self.about,
+                                  oldPlayerid
+                              ))
             self.conn.commit()
             self.conn.close()
