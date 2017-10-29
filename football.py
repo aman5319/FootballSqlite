@@ -120,6 +120,7 @@ def showTeam():
 @app.route("/team_view/<string:teamName>")
 def viewTeam(teamName):
     conn = sqlite3.connect("./football/football.db")
+    conn.execute('PRAGMA FOREIGN_KEYS = ON ')
     cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
     b = ["teamName",
          "teamLogo",
@@ -141,8 +142,9 @@ def viewTeam(teamName):
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
 def deleteTeam(teamName):
     if request.method == "POST":
-        print(request.url ,"  " , teamName)
+        print(request.url, "  ", teamName)
         conn = sqlite3.connect("./football/football.db")
+        conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
         conn.commit()
         conn.close()
@@ -151,8 +153,23 @@ def deleteTeam(teamName):
 
 @app.route("/teamPlayers/<string:teamName>")
 def teamPlayers(teamName):
-    a = db.info.find_one({"teamName": teamName}, {"_id": 0, "players": 1, "teamName": 1})
-    return render_template("teamplayers.html", teamPlayersData=a)
+    conn = sqlite3.connect("./football/football.db")
+    conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+    cursor = conn.execute("SELECT  * FROM PLAYER WHERE TEAM_NAME =?", (teamName,))
+    try:
+        b = ["teamName", "playerId", "playerName", "country", "playerAge", "playerPhoto",
+         "playerDate", "numberOfGoals", "playerPosition", "playerCost",
+         "playerJerseyNum", "about"]
+        list1 = []
+        for cursor1 in cursor:
+            list1.append(dict(zip(b, cursor1)))
+        return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"])
+
+    except :
+        return render_template("teamplayers.html" , teamNamee=teamName)
+    finally:
+        conn.close()
+
 
 
 @app.route("/addplayers/<string:teamName>", methods=["GET", "POST"])
@@ -172,15 +189,16 @@ def addPlayers(teamName):
                        playerposition=request.form.get("playerPosition", None),
                        playercost=request.form.get("playerCost", None),
                        jerseynum=request.form.get("playerJerseyNum", 0),
-                       about=about, operation="insert",
-                       oldPlayerName="dsada")
+                       about=about,
+                       operation="insert",
+                       oldPlayerid="")
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
         return render_template("playerAddForm.html")
 
 
-@app.route("/editplayers/<string:teamName>/<string:playerName>", methods=["GET", "POST"])
-def editPlayers(teamName, playerName):
+@app.route("/editplayers/<string:teamName>/<int:playerId>", methods=["GET", "POST"])
+def editPlayers(teamName, playerId):
     if request.method == "POST":
         t = Team(teamName)
         about = request.form.get("about", None)
@@ -198,47 +216,51 @@ def editPlayers(teamName, playerName):
                        jerseynum=request.form.get("playerJerseyNum", 0),
                        about=about,
                        operation="update",
-                       oldPlayerName=playerName)
+                       oldPlayerid=playerId)
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
-
+        conn = sqlite3.connect("./football/football.db")
+        conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+        cursor = conn.execute("SELECT * FROM PLAYER WHERE PLAYER_ID =?", (playerId,)).fetchone()
         mydict = {"Goalkeeper": "Goalkeeper",
                   "Right full back": "Right full back",
                   "Left full back": " Left full back",
                   "Right half back": "Right half back",
                   "Centre half back": "Centre half back",
                   "Left half back": "Left half back"}
-        a = db.info.aggregate([
-            {"$unwind": "$players"},
-            {"$match": {"teamName": teamName, "players.playerName": playerName}},
-            {"$project": {"players": 1, "_id": 0}}
-        ], useCursor=False)
-        abc = ""
-        for ab in a:
-            abc = ab["players"]
+
+        b = ["teamName", "playerId", "playerName", "country", "playerAge", "playerPhoto",
+             "playerDate", "numberOfGoals", "playerPosition", "playerCost",
+             "playerJerseyNum", "about"]
+        abc = dict(zip(b, cursor))
         return render_template("playerEditForm.html", teamPlayerData=abc, mydict=mydict, target=abc["playerPosition"])
 
 
-@app.route("/deleteplayers/<string:teamName>/<string:playerName>", methods=["POST"])
-def deletePlayers(teamName, playerName):
+@app.route("/deleteplayers/<string:teamName>/<int:playerId>", methods=["POST"])
+def deletePlayers(teamName, playerId):
     if request.method == "POST":
-        db.info.update_one({"teamName": teamName}, {"$pull": {"players": {"playerName": playerName}}})
+        conn = sqlite3.connect("./football/football.db")
+        conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+
+        conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''' , (playerId , ))
+        conn.commit()
+        conn.close()
         return redirect(url_for("teamPlayers", teamName=teamName))
 
 
-@app.route("/viewPlayer/<string:teamName>/<string:playerName>")
-def viewPlayer(teamName, playerName):
-    a = db.info.aggregate([
-        {"$unwind": "$players"},
-        {"$match": {"teamName": teamName, "players.playerName": playerName}},
-        {"$project": {"players": 1, "_id": 0, "teamLogo": 1}}
-    ], useCursor=False)
-    abc = ""
-    logo = ""
-    for ab in a:
-        logo = ab["teamLogo"]
-        abc = ab["players"]
-    return render_template("playerinfo.html", playerData=abc, logo=logo)
+@app.route("/viewPlayer/<string:teamName>/<int:playerId>")
+def viewPlayer(teamName, playerId):
+    conn = sqlite3.connect("./football/football.db")
+    conn.execute('PRAGMA FOREIGN_KEYS = ON ')
+
+    cursor = conn.execute('''SELECT * FROM PLAYER WHERE PLAYER_ID =?''' , (playerId , )).fetchone()
+    b = ["teamName", "playerId", "playerName", "country", "playerAge", "playerPhoto",
+         "playerDate", "numberOfGoals", "playerPosition", "playerCost",
+         "playerJerseyNum", "about"]
+    abc = dict(zip(b, cursor))
+    cursorLogo = conn.execute('''SELECT TEAM_LOGO_URL FROM TEAM , PLAYER WHERE PLAYER_ID =? AND TEAM.TEAM_NAME =?''' , (playerId ,teamName )).fetchone()
+    conn.close()
+    return render_template("playerinfo.html", playerData=abc , logo=cursorLogo[0])
 
 
 @app.route("/feedback/", methods=["GET", "POST"])
