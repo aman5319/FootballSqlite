@@ -12,56 +12,53 @@
     <table id="6" parent="2" name="FEEDBACK"/>
     <table id="7" parent="2" name="MATCH_FIXTURE"/>
     <table id="8" parent="2" name="MATCH_RESULT"/>
-    <table id="9" parent="2" name="PLAYER"/>
-    <table id="10" parent="2" name="TEAM"/>
-    <table id="11" parent="2" name="sqlite_master">
+    <table id="9" parent="2" name="MATCH_VENUE"/>
+    <table id="10" parent="2" name="PLAYER"/>
+    <table id="11" parent="2" name="TEAM"/>
+    <table id="12" parent="2" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="12" parent="2" name="sqlite_sequence">
+    <table id="13" parent="2" name="sqlite_sequence">
       <System>1</System>
     </table>
-    <column id="13" parent="6" name="NAME">
+    <column id="14" parent="6" name="NAME">
       <DataType>TEXT|0</DataType>
     </column>
-    <column id="14" parent="6" name="EMAIL">
+    <column id="15" parent="6" name="EMAIL">
       <Position>1</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="15" parent="6" name="PRESENTATION">
+    <column id="16" parent="6" name="PRESENTATION">
       <Position>2</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="16" parent="6" name="IDEA">
+    <column id="17" parent="6" name="IDEA">
       <Position>3</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="17" parent="6" name="OBJECTIVES">
+    <column id="18" parent="6" name="OBJECTIVES">
       <Position>4</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="18" parent="6" name="SUGGESTION">
+    <column id="19" parent="6" name="SUGGESTION">
       <Position>5</Position>
       <DataType>VARCHAR(200)|0</DataType>
     </column>
-    <column id="19" parent="7" name="MATCH_ID">
+    <column id="20" parent="7" name="MATCH_ID">
       <DataType>INTEGER|0</DataType>
       <SequenceIdentity>1</SequenceIdentity>
     </column>
-    <column id="20" parent="7" name="MATCH_DATE">
+    <column id="21" parent="7" name="MATCH_DATE">
       <Position>1</Position>
       <DataType>DATE|0</DataType>
     </column>
-    <column id="21" parent="7" name="TEAM1">
+    <column id="22" parent="7" name="TEAM1">
       <Position>2</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="22" parent="7" name="TEAM2">
+    <column id="23" parent="7" name="TEAM2">
       <Position>3</Position>
       <DataType>VARCHAR(20)|0</DataType>
-    </column>
-    <column id="23" parent="7" name="MATCH_VENUE">
-      <Position>4</Position>
-      <DataType>TEXT(20)|0</DataType>
     </column>
     <key id="24" parent="7">
       <ColNames>MATCH_ID</ColNames>
@@ -108,145 +105,162 @@
       <RefColNames>TEAM_NAME</RefColNames>
       <OnDelete>cascade</OnDelete>
     </foreign-key>
-    <column id="33" parent="9" name="TEAM_NAME">
+    <column id="33" parent="9" name="MATCH_ID">
+      <DataType>INTEGER|0</DataType>
+    </column>
+    <column id="34" parent="9" name="LOCATION">
+      <Position>1</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="34" parent="9" name="PLAYER_ID">
+    <column id="35" parent="9" name="STADIUM">
+      <Position>2</Position>
+      <DataType>VARCHAR(20)|0</DataType>
+    </column>
+    <foreign-key id="36" parent="9">
+      <ColNames>MATCH_ID</ColNames>
+      <RefTableName>MATCH_FIXTURE</RefTableName>
+      <RefColNames>MATCH_ID</RefColNames>
+      <OnDelete>cascade</OnDelete>
+    </foreign-key>
+    <column id="37" parent="10" name="TEAM_NAME">
+      <DataType>VARCHAR(20)|0</DataType>
+    </column>
+    <column id="38" parent="10" name="PLAYER_ID">
       <Position>1</Position>
       <DataType>INTEGER|0</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>1</SequenceIdentity>
     </column>
-    <column id="35" parent="9" name="PLAYER_NAME">
+    <column id="39" parent="10" name="PLAYER_NAME">
       <Position>2</Position>
       <DataType>TEXT(30)|0</DataType>
     </column>
-    <column id="36" parent="9" name="COUNTRY">
+    <column id="40" parent="10" name="COUNTRY">
       <Position>3</Position>
       <DataType>TEXT(10)|0</DataType>
     </column>
-    <column id="37" parent="9" name="AGE">
+    <column id="41" parent="10" name="AGE">
       <Position>4</Position>
       <DataType>INT(2)|0</DataType>
     </column>
-    <column id="38" parent="9" name="PLAYER_PHOTOGRAPH_URL">
+    <column id="42" parent="10" name="PLAYER_PHOTOGRAPH_URL">
       <Position>5</Position>
       <DataType>VARCHAR(200)|0</DataType>
     </column>
-    <column id="39" parent="9" name="DATE_OF_BIRTH">
+    <column id="43" parent="10" name="DATE_OF_BIRTH">
       <Position>6</Position>
       <DataType>VARCHAR(15)|0</DataType>
     </column>
-    <column id="40" parent="9" name="NUMBER_OF_GOALS">
+    <column id="44" parent="10" name="NUMBER_OF_GOALS">
       <Position>7</Position>
       <DataType>INT(2)|0</DataType>
     </column>
-    <column id="41" parent="9" name="PLAYER_POSITION">
+    <column id="45" parent="10" name="PLAYER_POSITION">
       <Position>8</Position>
       <DataType>TEXT(15)|0</DataType>
     </column>
-    <column id="42" parent="9" name="PLAYER_COST">
+    <column id="46" parent="10" name="PLAYER_COST">
       <Position>9</Position>
       <DataType>INT(10)|0</DataType>
     </column>
-    <column id="43" parent="9" name="JERSEY_NUMBER">
+    <column id="47" parent="10" name="JERSEY_NUMBER">
       <Position>10</Position>
       <DataType>INT(2)|0</DataType>
     </column>
-    <column id="44" parent="9" name="PLAYER_ABOUT">
+    <column id="48" parent="10" name="PLAYER_ABOUT">
       <Position>11</Position>
       <DataType>VARCHAR(50)|0</DataType>
     </column>
-    <key id="45" parent="9">
+    <key id="49" parent="10">
       <ColNames>PLAYER_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="46" parent="9">
+    <foreign-key id="50" parent="10">
       <ColNames>TEAM_NAME</ColNames>
       <RefTableName>TEAM</RefTableName>
       <RefColNames>TEAM_NAME</RefColNames>
       <OnDelete>cascade</OnDelete>
     </foreign-key>
-    <column id="47" parent="10" name="TEAM_NAME">
+    <column id="51" parent="11" name="TEAM_NAME">
       <DataType>VARCHAR(20)|0</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="48" parent="10" name="TEAM_LOGO_URL">
+    <column id="52" parent="11" name="TEAM_LOGO_URL">
       <Position>1</Position>
       <DataType>VARCHAR(200)|0</DataType>
     </column>
-    <column id="49" parent="10" name="SQUAD_PIC_URL">
+    <column id="53" parent="11" name="SQUAD_PIC_URL">
       <Position>2</Position>
       <DataType>VARCHAR(200)|0</DataType>
     </column>
-    <column id="50" parent="10" name="FOUNDED_ON">
+    <column id="54" parent="11" name="FOUNDED_ON">
       <Position>3</Position>
       <DataType>VARCHAR(20)|0</DataType>
     </column>
-    <column id="51" parent="10" name="HOMEGROUND">
+    <column id="55" parent="11" name="HOMEGROUND">
       <Position>4</Position>
       <DataType>TEXT(15)|0</DataType>
     </column>
-    <column id="52" parent="10" name="TEAM_COST">
+    <column id="56" parent="11" name="TEAM_COST">
       <Position>5</Position>
       <DataType>INT(10)|0</DataType>
     </column>
-    <column id="53" parent="10" name="TEAM_WEBSITE">
+    <column id="57" parent="11" name="TEAM_WEBSITE">
       <Position>6</Position>
       <DataType>VARCHAR(30)|0</DataType>
     </column>
-    <column id="54" parent="10" name="TEAM_OWNER">
+    <column id="58" parent="11" name="TEAM_OWNER">
       <Position>7</Position>
       <DataType>TEXT(15)|0</DataType>
     </column>
-    <column id="55" parent="10" name="TEAM_COACH">
+    <column id="59" parent="11" name="TEAM_COACH">
       <Position>8</Position>
       <DataType>TEXT(15)|0</DataType>
     </column>
-    <column id="56" parent="10" name="TEAM_SPONSER">
+    <column id="60" parent="11" name="TEAM_SPONSER">
       <Position>9</Position>
       <DataType>TEXT(10)|0</DataType>
     </column>
-    <column id="57" parent="10" name="COUNTRY">
+    <column id="61" parent="11" name="COUNTRY">
       <Position>10</Position>
       <DataType>TEXT(10)|0</DataType>
     </column>
-    <column id="58" parent="10" name="ABOUT">
+    <column id="62" parent="11" name="ABOUT">
       <Position>11</Position>
       <DataType>TEXT(50)|0</DataType>
     </column>
-    <index id="59" parent="10" name="sqlite_autoindex_TEAM_1">
+    <index id="63" parent="11" name="sqlite_autoindex_TEAM_1">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>TEAM_NAME</ColNames>
       <ColumnCollations></ColumnCollations>
       <Unique>1</Unique>
     </index>
-    <key id="60" parent="10">
+    <key id="64" parent="11">
       <ColNames>TEAM_NAME</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>sqlite_autoindex_TEAM_1</UnderlyingIndexName>
     </key>
-    <column id="61" parent="11" name="type">
+    <column id="65" parent="12" name="type">
       <DataType>text|0</DataType>
     </column>
-    <column id="62" parent="11" name="name">
+    <column id="66" parent="12" name="name">
       <Position>1</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="63" parent="11" name="tbl_name">
+    <column id="67" parent="12" name="tbl_name">
       <Position>2</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="64" parent="11" name="rootpage">
+    <column id="68" parent="12" name="rootpage">
       <Position>3</Position>
       <DataType>integer|0</DataType>
     </column>
-    <column id="65" parent="11" name="sql">
+    <column id="69" parent="12" name="sql">
       <Position>4</Position>
       <DataType>text|0</DataType>
     </column>
-    <column id="66" parent="12" name="name"/>
-    <column id="67" parent="12" name="seq">
+    <column id="70" parent="13" name="name"/>
+    <column id="71" parent="13" name="seq">
       <Position>1</Position>
     </column>
   </database-model>

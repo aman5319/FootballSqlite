@@ -4,16 +4,8 @@
     <list default="true" id="dbfe2984-5466-4598-b4e6-f6e1883a43be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/football.db" afterPath="$PROJECT_DIR$/football.db" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources/7139b4b1-1212-4a86-abee-6a459ca80578.xml" afterPath="$PROJECT_DIR$/.idea/dataSources/7139b4b1-1212-4a86-abee-6a459ca80578.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/crudClass.py" afterPath="$PROJECT_DIR$/crudClass.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/football.py" afterPath="$PROJECT_DIR$/football.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/footballDatabase.py" afterPath="$PROJECT_DIR$/footballDatabase.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/hello.py" afterPath="$PROJECT_DIR$/hello.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/populateData.py" afterPath="$PROJECT_DIR$/populateData.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/layout.html" afterPath="$PROJECT_DIR$/templates/layout.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/playerAddForm.html" afterPath="$PROJECT_DIR$/templates/playerAddForm.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/playerEditForm.html" afterPath="$PROJECT_DIR$/templates/playerEditForm.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/playerinfo.html" afterPath="$PROJECT_DIR$/templates/playerinfo.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/teamplayers.html" afterPath="$PROJECT_DIR$/templates/teamplayers.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,8 +16,8 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/football$football.coverage" NAME="football Coverage Results" MODIFIED="1509276281262" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/football$populateData.coverage" NAME="populateData Coverage Results" MODIFIED="1509275293753" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/football$footballDatabase.coverage" NAME="footballDatabase Coverage Results" MODIFIED="1509280590290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/football$populateData.coverage" NAME="populateData Coverage Results" MODIFIED="1509282135355" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/football$footballDatabase.coverage" NAME="footballDatabase Coverage Results" MODIFIED="1509282323601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -108,18 +100,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="footballDatabase.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="footballDatabase.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/footballDatabase.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="59" column="0" lean-forward="false" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+            <state relative-caret-position="1116">
+              <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
               <folding>
-                <marker date="1509280590225" expanded="true" signature="73:402" ph="CREATE TABLE... TEAM" />
-                <marker date="1509280590225" expanded="true" signature="408:856" ph="..." />
-                <marker date="1509280590225" expanded="true" signature="427:852" ph="CREATE TABLE... PLAYER" />
-                <marker date="1509280590225" expanded="true" signature="877:1174" ph="CREATE TABLE... MATCH_FIXTURE" />
-                <marker date="1509280590225" expanded="true" signature="1203:1507" ph="CREATE TABLE... MATCH_RESULT" />
-                <marker date="1509280590225" expanded="true" signature="1529:1676" ph="CREATE TABLE... FEEDBACK" />
+                <marker date="1509282463978" expanded="true" signature="71:378" ph="CREATE TABLE... TEAM" />
+                <marker date="1509282463978" expanded="true" signature="383:805" ph="..." />
+                <marker date="1509282463978" expanded="true" signature="400:801" ph="CREATE TABLE... PLAYER" />
+                <marker date="1509282463978" expanded="true" signature="823:1085" ph="CREATE TABLE... MATCH_FIXTURE" />
+                <marker date="1509282463978" expanded="true" signature="1108:1273" ph="CREATE TABLE... MATCH_VENUE" />
+                <marker date="1509282463978" expanded="true" signature="1295:1585" ph="CREATE TABLE... MATCH_RESULT" />
+                <marker date="1509282463978" expanded="true" signature="1606:1753" ph="CREATE TABLE... FEEDBACK" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="populateData.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/populateData.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="54">
+              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding>
+                <marker date="1509282464018" expanded="true" signature="55:67" ph="INSERT INTO PLAYER... " />
               </folding>
             </state>
           </provider>
@@ -206,10 +211,10 @@
         <option value="$PROJECT_DIR$/templates/playerinfo.html" />
         <option value="$PROJECT_DIR$/templates/playerAddForm.html" />
         <option value="$PROJECT_DIR$/crudClass.py" />
-        <option value="$PROJECT_DIR$/populateData.py" />
         <option value="$PROJECT_DIR$/templates/layout.html" />
         <option value="$PROJECT_DIR$/football.py" />
         <option value="$PROJECT_DIR$/footballDatabase.py" />
+        <option value="$PROJECT_DIR$/populateData.py" />
       </list>
     </option>
   </component>
@@ -250,11 +255,6 @@
               <item name="football" type="b2602c69:ProjectViewProjectNode" />
               <item name="football" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="football" type="b2602c69:ProjectViewProjectNode" />
-              <item name="football" type="462c0819:PsiDirectoryNode" />
-              <item name="templates" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -286,7 +286,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.football">
+  <component name="RunManager" selected="Python.footballDatabase">
     <configuration name="football" type="PythonConfigurationType" factoryName="Python" singleton="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -374,15 +374,15 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41147542" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4101307" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.50911975" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.49088025" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.9624183" sideWeight="0.49088025" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32843137" sideWeight="0.49088025" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24266455" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298969" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -456,12 +456,13 @@
         <state relative-caret-position="234">
           <caret line="13" column="12" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="12" />
           <folding>
-            <marker date="1509280590225" expanded="true" signature="73:402" ph="CREATE TABLE... TEAM" />
-            <marker date="1509280590225" expanded="true" signature="408:856" ph="..." />
-            <marker date="1509280590225" expanded="true" signature="427:852" ph="CREATE TABLE... PLAYER" />
-            <marker date="1509280590225" expanded="true" signature="877:1174" ph="CREATE TABLE... MATCH_FIXTURE" />
-            <marker date="1509280590225" expanded="true" signature="1203:1507" ph="CREATE TABLE... MATCH_RESULT" />
-            <marker date="1509280590225" expanded="true" signature="1529:1676" ph="CREATE TABLE... FEEDBACK" />
+            <marker date="1509282463978" expanded="true" signature="71:378" ph="CREATE TABLE... TEAM" />
+            <marker date="1509282463978" expanded="true" signature="383:805" ph="..." />
+            <marker date="1509282463978" expanded="true" signature="400:801" ph="CREATE TABLE... PLAYER" />
+            <marker date="1509282463978" expanded="true" signature="823:1085" ph="CREATE TABLE... MATCH_FIXTURE" />
+            <marker date="1509282463978" expanded="true" signature="1108:1273" ph="CREATE TABLE... MATCH_VENUE" />
+            <marker date="1509282463978" expanded="true" signature="1295:1585" ph="CREATE TABLE... MATCH_RESULT" />
+            <marker date="1509282463978" expanded="true" signature="1606:1753" ph="CREATE TABLE... FEEDBACK" />
           </folding>
         </state>
       </provider>
@@ -471,7 +472,7 @@
         <state relative-caret-position="36">
           <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="7" selection-end-column="36" />
           <folding>
-            <marker date="1509275311971" expanded="true" signature="54:66" ph="INSERT INTO PLAYER... " />
+            <marker date="1509282464018" expanded="true" signature="55:67" ph="INSERT INTO PLAYER... " />
           </folding>
         </state>
       </provider>
@@ -533,7 +534,7 @@
         <state relative-caret-position="252">
           <caret line="14" column="23" lean-forward="false" selection-start-line="14" selection-start-column="23" selection-end-line="14" selection-end-column="23" />
           <folding>
-            <marker date="1509275311971" expanded="true" signature="54:66" ph="INSERT INTO PLAYER... " />
+            <marker date="1509282464018" expanded="true" signature="55:67" ph="INSERT INTO PLAYER... " />
           </folding>
         </state>
       </provider>
@@ -641,16 +642,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/populateData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="54">
-          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding>
-            <marker date="1509275311971" expanded="true" signature="54:66" ph="INSERT INTO PLAYER... " />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/crudClass.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
@@ -687,13 +678,6 @@
         <state relative-caret-position="362">
           <caret line="35" column="50" lean-forward="false" selection-start-line="35" selection-start-column="50" selection-end-line="35" selection-end-column="50" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://table:/bd660381/7139b4b1-1212-4a86-abee-6a459ca80578/main.PLAYER">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
         </state>
       </provider>
     </entry>
@@ -779,17 +763,35 @@
         </state>
       </provider>
     </entry>
+    <entry file="das://table:/bd660381/7139b4b1-1212-4a86-abee-6a459ca80578/main.PLAYER">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/footballDatabase.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="59" column="0" lean-forward="false" selection-start-line="59" selection-start-column="0" selection-end-line="59" selection-end-column="0" />
+        <state relative-caret-position="1116">
+          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
           <folding>
-            <marker date="1509280590225" expanded="true" signature="73:402" ph="CREATE TABLE... TEAM" />
-            <marker date="1509280590225" expanded="true" signature="408:856" ph="..." />
-            <marker date="1509280590225" expanded="true" signature="427:852" ph="CREATE TABLE... PLAYER" />
-            <marker date="1509280590225" expanded="true" signature="877:1174" ph="CREATE TABLE... MATCH_FIXTURE" />
-            <marker date="1509280590225" expanded="true" signature="1203:1507" ph="CREATE TABLE... MATCH_RESULT" />
-            <marker date="1509280590225" expanded="true" signature="1529:1676" ph="CREATE TABLE... FEEDBACK" />
+            <marker date="1509282463978" expanded="true" signature="71:378" ph="CREATE TABLE... TEAM" />
+            <marker date="1509282463978" expanded="true" signature="383:805" ph="..." />
+            <marker date="1509282463978" expanded="true" signature="400:801" ph="CREATE TABLE... PLAYER" />
+            <marker date="1509282463978" expanded="true" signature="823:1085" ph="CREATE TABLE... MATCH_FIXTURE" />
+            <marker date="1509282463978" expanded="true" signature="1108:1273" ph="CREATE TABLE... MATCH_VENUE" />
+            <marker date="1509282463978" expanded="true" signature="1295:1585" ph="CREATE TABLE... MATCH_RESULT" />
+            <marker date="1509282463978" expanded="true" signature="1606:1753" ph="CREATE TABLE... FEEDBACK" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/populateData.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding>
+            <marker date="1509282464018" expanded="true" signature="55:67" ph="INSERT INTO PLAYER... " />
           </folding>
         </state>
       </provider>
