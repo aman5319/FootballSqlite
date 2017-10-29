@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container">
     <div class="row">
-        {% for a in teamPlayersData["players"] %}
+        {% for a in teamPlayersData %}
         <div class="col s4">
                         <div class="card-panel hoverable">
 
@@ -14,9 +14,9 @@
                 <div class="card-content">
                     <span class="card-title activator grey-text text-darken-4"><i
                             class="material-icons right">more_vert</i>{{a["playerName"]}}</span>
-                    <a href="{{url_for('viewPlayer', teamName=teamPlayersData['teamName'], playerName=a['playerName']) }}" class="waves-effect waves-teal btn-flat">View</a>
-                    <a href="{{url_for('editPlayers', teamName=teamPlayersData['teamName'], playerName=a['playerName']) }}" class="waves-effect waves-teal btn-flat">Update</a>
-                    <form action="{{url_for('deletePlayers' , teamName=teamPlayersData['teamName'] , playerName=a['playerName'])}}" method="post">
+                    <a href="{{url_for('viewPlayer', teamName=teamNamee, playerId=a['playerId']) }}" class="waves-effect waves-teal btn-flat">View</a>
+                    <a href="{{url_for('editPlayers', teamName=teamNamee, playerId=a['playerId']) }}" class="waves-effect waves-teal btn-flat">Update</a>
+                    <form action="{{url_for('deletePlayers' , teamName=teamNamee , playerId=a['playerId'])}}" method="post">
                         <input class="waves-effect waves-teal btn-flat" type="submit" value="Delete"/>
                     </form>
                 </div>
@@ -33,7 +33,7 @@
 </div>
 
 <div class="fixed-action-btn">
-    <a href="{{url_for('addPlayers' , teamName=teamPlayersData['teamName'])}}"
+    <a href="{{url_for('addPlayers' , teamName=teamNamee)}}"
        class="btn-floating btn-large waves-effect waves-light teal">
         <i class="material-icons">add</i>
     </a>
