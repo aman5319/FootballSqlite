@@ -127,8 +127,8 @@ def addPlayers(teamName):
         return render_template("playerAddForm.html")
 
 
-@app.route("/editplayers/<string:teamName>/<string:playerName>", methods=["GET", "POST"])
-def editPlayers(teamName, playerName):
+@app.route("/editplayers/<string:teamName>/<int:playerId>", methods=["GET", "POST"])
+def editPlayers(teamName, playerId):
     if request.method == "POST":
         t = Team(teamName)
         about = request.form.get("about", None)
@@ -167,18 +167,18 @@ def editPlayers(teamName, playerName):
         return render_template("playerEditForm.html", teamPlayerData=abc, mydict=mydict, target=abc["playerPosition"])
 
 
-@app.route("/deleteplayers/<string:teamName>/<string:playerName>", methods=["POST"])
-def deletePlayers(teamName, playerName):
+@app.route("/deleteplayers/<string:teamName>/<string:playerId>", methods=["POST"])
+def deletePlayers(teamName, playerId):
     if request.method == "POST":
-        db.info.update_one({"teamName": teamName}, {"$pull": {"players": {"playerName": playerName}}})
+        db.info.update_one({"teamName": teamName}, {"$pull": {"players": {"playerName": playerId}}})
         return redirect(url_for("teamPlayers", teamName=teamName))
 
 
-@app.route("/viewPlayer/<string:teamName>/<string:playerName>")
-def viewPlayer(teamName, playerName):
+@app.route("/viewPlayer/<string:teamName>/<int:playerId>")
+def viewPlayer(teamName, playerId):
     a = db.info.aggregate([
         {"$unwind": "$players"},
-        {"$match": {"teamName": teamName, "players.playerName": playerName}},
+        {"$match": {"teamName": teamName, "players.playerName": playerId}},
         {"$project": {"players": 1, "_id": 0, "teamLogo": 1}}
     ], useCursor=False)
     abc = ""
