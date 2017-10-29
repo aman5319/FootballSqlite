@@ -51,7 +51,7 @@ def editTeam(teamName):
                       about=about,
                       operation="update")
         print(request.form)
-        return redirect(url_for("hello_world"))
+        return redirect(url_for("showTeam"))
 
 
 @app.route("/addTeam/", methods=["POST", "GET"])
@@ -74,7 +74,7 @@ def addTeam():
                       country=request.form.get("country", None),
                       about=about,
                       operation="insert")
-        return redirect(url_for("hello_world"))
+        return redirect(url_for("showTeam"))
     else:
         return render_template("teamAddForm.html")
 
@@ -114,54 +114,38 @@ def showTeam():
     for line in cursor:
         list1.append(dict(zip(b, line)))
     conn.close()
-    print(list1)
     return render_template("allTeam.html", teamInformation=list1)
-
-
-
-
-
-@app.route("/feedback/", methods=["GET", "POST"])
-def feedback():
-    if request.method == "POST":
-        db.feedback.insert_one(dict(
-            name=request.form.get("name", None),
-            email=request.form.get("email", None),
-            presentation=request.form.get("presentation", None),
-            idea=request.form.get("idea", None),
-            objective=request.form.get("objective", None),
-            review=request.form.get("review", None)
-        ))
-        return redirect(url_for("teamInfo"))
-    elif request.method == "GET":
-        return render_template("feedback.html")
-
-
-@app.route("/showfeedBack/")
-def showFeedback():
-    return render_template("feedbackshow.html", feedback=db.feedback.find({}))
-
-
-@app.route("/matchFixture", methods=["GET", "POST"])
-def matchFixture():
-    return render_template("matchFixture.html")
-
-
-@app.route("/topTeam")
-def topTeam():
-    return render_template("topTeam.html")
 
 
 @app.route("/team_view/<string:teamName>")
 def viewTeam(teamName):
-    a = db.info.find_one({"teamName": teamName}, {"_id": 0})
-    return render_template("teaminfo.html", teamdata=a)
+    conn = sqlite3.connect("./football/football.db")
+    cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
+    b = ["teamName",
+         "teamLogo",
+         "squadPic",
+         "founded",
+         "homeGround",
+         "teamCost",
+         "teamWebsite",
+         "teamOwner",
+         "teamCoach",
+         "teamSponsor",
+         "country",
+         "about"]
+    teamInfo = dict(zip(b, cursor))
+    conn.close()
+    return render_template("teaminfo.html", teamdata=teamInfo)
 
 
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
 def deleteTeam(teamName):
     if request.method == "POST":
-        db.info.delete_one({"teamName": teamName})
+        print(request.url ,"  " , teamName)
+        conn = sqlite3.connect("./football/football.db")
+        conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
+        conn.commit()
+        conn.close()
         return redirect(url_for("showTeam"))
 
 
@@ -255,6 +239,37 @@ def viewPlayer(teamName, playerName):
         logo = ab["teamLogo"]
         abc = ab["players"]
     return render_template("playerinfo.html", playerData=abc, logo=logo)
+
+
+@app.route("/feedback/", methods=["GET", "POST"])
+def feedback():
+    if request.method == "POST":
+        db.feedback.insert_one(dict(
+            name=request.form.get("name", None),
+            email=request.form.get("email", None),
+            presentation=request.form.get("presentation", None),
+            idea=request.form.get("idea", None),
+            objective=request.form.get("objective", None),
+            review=request.form.get("review", None)
+        ))
+        return redirect(url_for("teamInfo"))
+    elif request.method == "GET":
+        return render_template("feedback.html")
+
+
+@app.route("/showfeedBack/")
+def showFeedback():
+    return render_template("feedbackshow.html", feedback=db.feedback.find({}))
+
+
+@app.route("/matchFixture", methods=["GET", "POST"])
+def matchFixture():
+    return render_template("matchFixture.html")
+
+
+@app.route("/topTeam")
+def topTeam():
+    return render_template("topTeam.html")
 
 
 if __name__ == '__main__':
