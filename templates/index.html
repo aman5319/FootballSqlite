@@ -91,19 +91,19 @@
             </div>
         </div>
     </div>
-    {% block datalist %}
-        {#<datalist id="languages">#}
-        {##}
-        {#    {% for b in player_list %}#}
-        {##}
-        {#    <option value="{{b}}">#}
-        {##}
-        {#        {% endfor %}#}
-        {##}
-        {#</datalist>#}
-        <form action="" method="post">
-            <input type=search list="languages" placeholder="Player Search" name="searchBox">
-        </form>
-    {% endblock %}
-{% endblock %}
 
+{% endblock %}
+{% block datalist %}
+    {#<datalist id="languages">#}
+    {##}
+    {#    {% for b in player_list %}#}
+    {##}
+    {#    <option value="{{b}}">#}
+    {##}
+    {#        {% endfor %}#}
+    {##}
+    {#</datalist>#}
+    <form action="" method="post">
+        <input type=search list="languages" placeholder="Player Search" name="searchBox">
+    </form>
+{% endblock %}

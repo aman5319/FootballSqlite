@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, flash
 from crudClass import Team
 import sqlite3, os
 
@@ -81,40 +81,46 @@ def addTeam():
 
 @app.route("/", methods=["GET", "POST"])
 def teamInfo():
-    if request.method == "GET":
-        conn = sqlite3.connect("./football/football.db")
-        cursor = conn.execute("SELECT  TEAM_NAME FROM TEAM ")
-        b = ["teamName"]
-        list1 = []
-        for line in cursor:
-            list1.append(dict(zip(b, line)))
-        conn.close()
-        return render_template("index.html", teamNamess=list1)
-    elif request.method == "POST":
-        pass
+    try:
+        if request.method == "GET":
+            conn = sqlite3.connect("./football/football.db")
+            cursor = conn.execute("SELECT  TEAM_NAME FROM TEAM ")
+            b = ["teamName"]
+            list1 = []
+            for line in cursor:
+                list1.append(dict(zip(b, line)))
+            conn.close()
+            return render_template("index.html", teamNamess=list1)
+        elif request.method == "POST":
+            pass
+    except:
+        return render_template("index.html")
 
 
 @app.route("/showTeam/")
 def showTeam():
-    conn = sqlite3.connect("./football/football.db")
-    cursor = conn.execute("SELECT * FROM TEAM ")
-    b = ["teamName",
-         "teamLogo",
-         "squadPic",
-         "founded",
-         "homeGround",
-         "teamCost",
-         "teamWebsite",
-         "teamOwner",
-         "teamCoach",
-         "teamSponsor",
-         "country",
-         "about"]
-    list1 = []
-    for line in cursor:
-        list1.append(dict(zip(b, line)))
-    conn.close()
-    return render_template("allTeam.html", teamInformation=list1)
+    try:
+        conn = sqlite3.connect("./football/football.db")
+        cursor = conn.execute("SELECT * FROM TEAM ")
+        b = ["teamName",
+             "teamLogo",
+             "squadPic",
+             "founded",
+             "homeGround",
+             "teamCost",
+             "teamWebsite",
+             "teamOwner",
+             "teamCoach",
+             "teamSponsor",
+             "country",
+             "about"]
+        list1 = []
+        for line in cursor:
+            list1.append(dict(zip(b, line)))
+        conn.close()
+        return render_template("allTeam.html", teamInformation=list1)
+    except:
+        return render_template("allTeam.html")
 
 
 @app.route("/team_view/<string:teamName>")
@@ -158,18 +164,17 @@ def teamPlayers(teamName):
     cursor = conn.execute("SELECT  * FROM PLAYER WHERE TEAM_NAME =?", (teamName,))
     try:
         b = ["teamName", "playerId", "playerName", "country", "playerAge", "playerPhoto",
-         "playerDate", "numberOfGoals", "playerPosition", "playerCost",
-         "playerJerseyNum", "about"]
+             "playerDate", "numberOfGoals", "playerPosition", "playerCost",
+             "playerJerseyNum", "about"]
         list1 = []
         for cursor1 in cursor:
             list1.append(dict(zip(b, cursor1)))
         return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"])
 
-    except :
-        return render_template("teamplayers.html" , teamNamee=teamName)
+    except:
+        return render_template("teamplayers.html", teamNamee=teamName)
     finally:
         conn.close()
-
 
 
 @app.route("/addplayers/<string:teamName>", methods=["GET", "POST"])
@@ -242,7 +247,7 @@ def deletePlayers(teamName, playerId):
         conn = sqlite3.connect("./football/football.db")
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
-        conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''' , (playerId , ))
+        conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''', (playerId,))
         conn.commit()
         conn.close()
         return redirect(url_for("teamPlayers", teamName=teamName))
@@ -253,14 +258,15 @@ def viewPlayer(teamName, playerId):
     conn = sqlite3.connect("./football/football.db")
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
-    cursor = conn.execute('''SELECT * FROM PLAYER WHERE PLAYER_ID =?''' , (playerId , )).fetchone()
+    cursor = conn.execute('''SELECT * FROM PLAYER WHERE PLAYER_ID =?''', (playerId,)).fetchone()
     b = ["teamName", "playerId", "playerName", "country", "playerAge", "playerPhoto",
          "playerDate", "numberOfGoals", "playerPosition", "playerCost",
          "playerJerseyNum", "about"]
     abc = dict(zip(b, cursor))
-    cursorLogo = conn.execute('''SELECT TEAM_LOGO_URL FROM TEAM , PLAYER WHERE PLAYER_ID =? AND TEAM.TEAM_NAME =?''' , (playerId ,teamName )).fetchone()
+    cursorLogo = conn.execute('''SELECT TEAM_LOGO_URL FROM TEAM , PLAYER WHERE PLAYER_ID =? AND TEAM.TEAM_NAME =?''',
+                              (playerId, teamName)).fetchone()
     conn.close()
-    return render_template("playerinfo.html", playerData=abc , logo=cursorLogo[0])
+    return render_template("playerinfo.html", playerData=abc, logo=cursorLogo[0])
 
 
 @app.route("/feedback/", methods=["GET", "POST"])
