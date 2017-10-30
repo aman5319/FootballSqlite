@@ -4,7 +4,8 @@ import sqlite3, os
 class Team:
     def __init__(self, teamName1):
         self.teamName = teamName1
-        self.conn = sqlite3.connect("./football/football.db")
+        print(os.getcwd())
+        self.conn = sqlite3.connect("football.db")
 
     def insert_team(self, teamLogo, country, squadpic, founded, homeground, teamcost, teamowner, sponser, teamcoach,
                     teamWebsite, about, operation):

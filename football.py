@@ -4,6 +4,8 @@ import sqlite3, os
 
 app = Flask(__name__)
 
+app.secret_key = "!@#$%^&*()a-=afs;'';312$%^&*k-[;.sda,./][p;/'=-0989#$%^&0976678v$%^&*(fdsd21234266OJ^&UOKN4odsbd#$%^&*(sadg7(*&^%32b342gd']"
+
 
 @app.route('/test')
 def hello_world():
@@ -12,7 +14,7 @@ def hello_world():
 
 @app.route("/editTeam/<string:teamName>/", methods=["GET", "POST"])
 def editTeam(teamName):
-    conn = sqlite3.connect("./football/football.db")
+    conn = sqlite3.connect("football.db")
     if request.method == "GET":
         cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
         print(os.getcwd())
@@ -51,6 +53,7 @@ def editTeam(teamName):
                       about=about,
                       operation="update")
         print(request.form)
+        flash("You Just Edited a Team  " + teamName , "message")
         return redirect(url_for("showTeam"))
 
 
@@ -74,6 +77,7 @@ def addTeam():
                       country=request.form.get("country", None),
                       about=about,
                       operation="insert")
+        flash("You Just Added " + request.form.get("teamName", None) + "in league")
         return redirect(url_for("showTeam"))
     else:
         return render_template("teamAddForm.html")
@@ -83,7 +87,7 @@ def addTeam():
 def teamInfo():
     try:
         if request.method == "GET":
-            conn = sqlite3.connect("./football/football.db")
+            conn = sqlite3.connect("football.db")
             cursor = conn.execute("SELECT  TEAM_NAME FROM TEAM ")
             b = ["teamName"]
             list1 = []
@@ -100,7 +104,7 @@ def teamInfo():
 @app.route("/showTeam/")
 def showTeam():
     try:
-        conn = sqlite3.connect("./football/football.db")
+        conn = sqlite3.connect("football.db")
         cursor = conn.execute("SELECT * FROM TEAM ")
         b = ["teamName",
              "teamLogo",
@@ -125,7 +129,7 @@ def showTeam():
 
 @app.route("/team_view/<string:teamName>")
 def viewTeam(teamName):
-    conn = sqlite3.connect("./football/football.db")
+    conn = sqlite3.connect("football.db")
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
     cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
     b = ["teamName",
@@ -149,17 +153,18 @@ def viewTeam(teamName):
 def deleteTeam(teamName):
     if request.method == "POST":
         print(request.url, "  ", teamName)
-        conn = sqlite3.connect("./football/football.db")
+        conn = sqlite3.connect("football.db")
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
         conn.commit()
         conn.close()
+        flash("You Just Deleted a Team" + teamName )
         return redirect(url_for("showTeam"))
 
 
 @app.route("/teamPlayers/<string:teamName>")
 def teamPlayers(teamName):
-    conn = sqlite3.connect("./football/football.db")
+    conn = sqlite3.connect("football.db")
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
     cursor = conn.execute("SELECT  * FROM PLAYER WHERE TEAM_NAME =?", (teamName,))
     try:
@@ -224,7 +229,7 @@ def editPlayers(teamName, playerId):
                        oldPlayerid=playerId)
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
-        conn = sqlite3.connect("./football/football.db")
+        conn = sqlite3.connect("football.db")
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         cursor = conn.execute("SELECT * FROM PLAYER WHERE PLAYER_ID =?", (playerId,)).fetchone()
         mydict = {"Goalkeeper": "Goalkeeper",
@@ -244,7 +249,7 @@ def editPlayers(teamName, playerId):
 @app.route("/deleteplayers/<string:teamName>/<int:playerId>", methods=["POST"])
 def deletePlayers(teamName, playerId):
     if request.method == "POST":
-        conn = sqlite3.connect("./football/football.db")
+        conn = sqlite3.connect("football.db")
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
         conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''', (playerId,))
@@ -255,7 +260,7 @@ def deletePlayers(teamName, playerId):
 
 @app.route("/viewPlayer/<string:teamName>/<int:playerId>")
 def viewPlayer(teamName, playerId):
-    conn = sqlite3.connect("./football/football.db")
+    conn = sqlite3.connect("football.db")
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
     cursor = conn.execute('''SELECT * FROM PLAYER WHERE PLAYER_ID =?''', (playerId,)).fetchone()

@@ -8,10 +8,10 @@
 
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
 
 <!-- Dropdown Structure -->
 <ul id="dropdown1" class="dropdown-content">
@@ -49,11 +49,23 @@
 
     </div>
 </nav>
+{#{% with messages = get_flashed_messages(with_categories=true) %}#}
+{#    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->#}
+{#    {% if messages %}#}
+{#        {% for category, message in messages %}#}
+{#            <div class="alert alert-{{ category }} alert-dismissible" role="alert">#}
+{#                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>#}
+{#                </button>#}
+{#                <!-- this is the message to be loaded but it is loading plain text withou style --> {{ message }}#}
+{##}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{#{% endwith %}#}
 
-
-{% block content %}{% endblock %}
-
+{% block content %} {% endblock %}
 <br>
+
 <footer class="page-footer">
     <div class="container">
         <div class="row">
@@ -79,7 +91,7 @@
 
 
 <!--Import jQuery before materialize.js-->
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
 <script>
 
     $(document).ready(function () {
@@ -87,7 +99,7 @@
         $('.slider').slider();
     });
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
 <!-- Compiled and minified JavaScript -->
 </body>
 </html>
