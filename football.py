@@ -77,7 +77,7 @@ def addTeam():
                       country=request.form.get("country", None),
                       about=about,
                       operation="insert")
-        flash("You Just Added " + request.form.get("teamName", None) + "in league")
+        flash("You Just Added " + request.form.get("teamName", None) + " in league")
         return redirect(url_for("showTeam"))
     else:
         return render_template("teamAddForm.html")
@@ -160,7 +160,7 @@ def deleteTeam(teamName):
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
         conn.commit()
         conn.close()
-        flash("You Just Deleted a Team" + teamName)
+        flash("You Just Deleted a Team " + teamName)
         return redirect(url_for("showTeam"))
 
 
