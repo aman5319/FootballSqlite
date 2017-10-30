@@ -38,7 +38,7 @@ def editTeam(teamName):
     elif request.method == "POST":
         t = Team(teamName)
         about = request.form.get("teamAbout", None)
-        if about == "" or about == " ":
+        if about.strip() == "":
             about = "This team is prominent team in league"
         t.insert_team(teamLogo=request.form.get("teamLogo", None),
                       squadpic=request.form.get("squadPic", None),
@@ -62,7 +62,7 @@ def addTeam():
     if request.method == 'POST':
 
         about = request.form.get("teamAbout", None)
-        if about == "" or about == " ":
+        if about.strip() == "":
             about = "This team is prominent team in league"
         t = Team(request.form.get("teamName", None))
         t.insert_team(teamLogo=request.form.get("teamLogo", None),
@@ -212,7 +212,7 @@ def editPlayers(teamName, playerId):
     if request.method == "POST":
         t = Team(teamName)
         about = request.form.get("about", None)
-        if about == "" or about == " ":
+        if about.strip() == "":
             about = "This Player is a prominent Player in " + teamName
 
         t.insertPlayer(playername=request.form.get("playerName", None),
@@ -281,17 +281,20 @@ def feedback():
         presentation = request.form.get("presentation", None)
         idea = request.form.get("idea", None)
         objective = request.form.get("objective", None)
+        suggestion = request.form.get("review", None) if request.form.get("review",
+                                                                          None).strip() != "" else "No Suggestions"
 
         b = {"Excellent": 100, "Good": 75, "Satisfactory": 50, "Bad": 25}
         presentation_count = b[presentation]
         idea_count = b[idea]
         objective_count = b[idea]
+
         conn.execute(
             '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION, PRESENTATION_COUNT, IDEA_COUNT, OBJECTTIVES_COUNT)
                     VALUES (?,?,?,?,?,?,?,?,?)''',
             (request.form.get("name", None),
              request.form.get("email", None),
-             presentation, idea, objective, request.form.get("review", None),
+             presentation, idea, objective, suggestion,
              presentation_count, idea_count, objective_count)
         )
         conn.commit()
@@ -308,12 +311,12 @@ def showFeedback():
     cursor1 = conn.execute(
         "SELECT sum(PRESENTATION_COUNT)/COUNT(*) AS pcount ,sum(IDEA_COUNT)/COUNT(*) AS icount ,sum(OBJECTTIVES_COUNT)/COUNT(*) AS ocount , count(*) AS Tcount FROM FEEDBACK").fetchone()
     list1 = []
-    b1 = ["pcount" , "icount" , "ocount" , "Tcount"]
+    b1 = ["pcount", "icount", "ocount", "Tcount"]
     b = ["name", "email", "presentation", "idea", "objective", "review"]
     for line in cursor:
         list1.append(dict(zip(b, line)))
     conn.close()
-    return render_template("feedbackshow.html", feedback=list1, stat=dict(zip(b1,cursor1))) if len(
+    return render_template("feedbackshow.html", feedback=list1, stat=dict(zip(b1, cursor1))) if len(
         list1) != 0 else "No Feedback in database"
 
 
