@@ -131,7 +131,8 @@ def showTeam():
 def viewTeam(teamName):
     conn = sqlite3.connect("football.db")
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
-    cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
+    cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME =?", (teamName,)).fetchone()
+    cursor1 = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE PLAYER.TEAM_NAME=? ", (teamName,))
     b = ["teamName",
          "teamLogo",
          "squadPic",
@@ -145,8 +146,9 @@ def viewTeam(teamName):
          "country",
          "about"]
     teamInfo = dict(zip(b, cursor))
+    z = [dict(zip(["playerName", "jerseyNum"], line)) for line in cursor1]
     conn.close()
-    return render_template("teaminfo.html", teamdata=teamInfo)
+    return render_template("teaminfo.html", teamdata=teamInfo, playerData=z)
 
 
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
