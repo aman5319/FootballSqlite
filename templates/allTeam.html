@@ -24,7 +24,8 @@
                                    class="waves-effect waves-teal btn-flat">Update</a>
                                 <form action="{{ url_for('deleteTeam', teamName=team_infor['teamName']) }}"
                                       method="post">
-                                    <input class="waves-effect waves-teal btn-flat" type="submit" value="Delete"/>
+                                    <input class="waves-effect waves-teal btn-flat"  value="Delete" type="submit"
+                                           onClick="return !!confirm('This will delete {{ team_infor["teamName"] }}');"/>
                                 </form>
                             </div>
                             <div class="card-reveal">

@@ -26,9 +26,7 @@
                                 <form action="{{ url_for('deletePlayers' , teamName=teamNamee , playerId=a['playerId']) }}"
                                       method="post">
                                     <input class="waves-effect waves-teal btn-flat" type="submit" value="Delete"
-                                           onClick="if(confirm('This will delete {{ a["playerName"] }}'))
-                                                   {}
-                                                   else {}"/>
+                                           onClick="return !!confirm('This will delete {{ a["playerName"] }}');"/>
                                 </form>
                             </div>
                             <div class="card-reveal">
