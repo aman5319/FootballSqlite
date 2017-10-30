@@ -204,6 +204,7 @@ def addPlayers(teamName):
                        about=about,
                        operation="insert",
                        oldPlayerid="")
+        flash("You Just Added " + request.form.get("playerName", None) + " in "+ teamName)
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
         return render_template("playerAddForm.html")
@@ -229,6 +230,7 @@ def editPlayers(teamName, playerId):
                        about=about,
                        operation="update",
                        oldPlayerid=playerId)
+        flash("You Just Updated " + request.form.get("playerName" , None)+" Information", "message")
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
         conn = sqlite3.connect("football.db")
@@ -257,6 +259,7 @@ def deletePlayers(teamName, playerId):
         conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''', (playerId,))
         conn.commit()
         conn.close()
+        flash("you just deleted a player from " + teamName , "message")
         return redirect(url_for("teamPlayers", teamName=teamName))
 
 
