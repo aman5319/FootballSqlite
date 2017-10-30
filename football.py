@@ -277,14 +277,19 @@ def viewPlayer(teamName, playerId):
 @app.route("/feedback/", methods=["GET", "POST"])
 def feedback():
     if request.method == "POST":
-        db.feedback.insert_one(dict(
-            name=request.form.get("name", None),
-            email=request.form.get("email", None),
-            presentation=request.form.get("presentation", None),
-            idea=request.form.get("idea", None),
-            objective=request.form.get("objective", None),
-            review=request.form.get("review", None)
-        ))
+        conn = sqlite3.connect("football.db")
+        conn.execute(
+            '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION)
+                    VALUES (?,?,?,?,?,?)''',
+            (request.form.get("name", None),
+             request.form.get("email", None),
+             request.form.get("presentation", None),
+             request.form.get("idea", None),
+             request.form.get("objective", None),
+             request.form.get("review", None),)
+        )
+        conn.commit()
+        conn.close()
         return redirect(url_for("teamInfo"))
     elif request.method == "GET":
         return render_template("feedback.html")
@@ -292,7 +297,14 @@ def feedback():
 
 @app.route("/showfeedBack/")
 def showFeedback():
-    return render_template("feedbackshow.html", feedback=db.feedback.find({}))
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute("SELECT * FROM FEEDBACK")
+    list1 = []
+    b = ["name", "email", "presentation", "idea", "objective", "review"]
+    for line in cursor:
+        list1.append(dict(zip(b, line)))
+    conn.close()
+    return render_template("feedbackshow.html", feedback=list1 , len=len(list1)) if len(list1) != 0 else "No Feedback in database"
 
 
 @app.route("/matchFixture", methods=["GET", "POST"])

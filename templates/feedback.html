@@ -13,14 +13,18 @@
 <nav>
     <div class="nav-wrapper light-blue darken-3">
         <a class="brand-logo center">Feedback Form</a>
-
+        <a href="{{ url_for('teamInfo') }}"
+           class="waves-effect waves-light" style="font-size: medium">
+            <i class="material-icons left">arrow_back
+            </i>Home</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             <!-- Modal Trigger -->
+
             <li><a class="waves-effect waves-light btn modal-trigger" href="#modal1">CANCEL</a></li>
 
             <!-- Modal Structure -->
             <div id="modal1" class="modal">
-                <div class="modal-content green accent-3">
+                <div class="modal-content teal" style="font-size: medium">
                     <h4>Disclaimer</h4>
                     <p>This Feedback form sends the data to the developer.
                         Your feedback is necessary because it motivates the developer,
@@ -29,7 +33,8 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a href="{{url_for('teamInfo')}}" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+                    <a href="{{ url_for('teamInfo') }}"
+                       class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
                 </div>
             </div>
         </ul>
