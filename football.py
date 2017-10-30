@@ -278,15 +278,21 @@ def viewPlayer(teamName, playerId):
 def feedback():
     if request.method == "POST":
         conn = sqlite3.connect("football.db")
+        presentation = request.form.get("presentation", None)
+        idea = request.form.get("idea", None)
+        objective = request.form.get("objective", None)
+
+        b = {"Excellent": 100, "Good": 75, "Satisfactory": 50, "Bad": 25}
+        presentation_count = b[presentation]
+        idea_count = b[idea]
+        objective_count = b[idea]
         conn.execute(
-            '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION)
-                    VALUES (?,?,?,?,?,?)''',
+            '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION, PRESENTATION_COUNT, IDEA_COUNT, OBJECTTIVES_COUNT)
+                    VALUES (?,?,?,?,?,?,?,?,?)''',
             (request.form.get("name", None),
              request.form.get("email", None),
-             request.form.get("presentation", None),
-             request.form.get("idea", None),
-             request.form.get("objective", None),
-             request.form.get("review", None),)
+             presentation, idea, objective, request.form.get("review", None),
+             presentation_count, idea_count, objective_count)
         )
         conn.commit()
         conn.close()
@@ -298,13 +304,17 @@ def feedback():
 @app.route("/showfeedBack/")
 def showFeedback():
     conn = sqlite3.connect("football.db")
-    cursor = conn.execute("SELECT * FROM FEEDBACK")
+    cursor = conn.execute("SELECT NAME,EMAIL,PRESENTATION,IDEA,OBJECTIVES,SUGGESTION FROM FEEDBACK")
+    cursor1 = conn.execute(
+        "SELECT sum(PRESENTATION_COUNT)/COUNT(*) AS pcount ,sum(IDEA_COUNT)/COUNT(*) AS icount ,sum(OBJECTTIVES_COUNT)/COUNT(*) AS ocount , count(*) AS Tcount FROM FEEDBACK").fetchone()
     list1 = []
+    b1 = ["pcount" , "icount" , "ocount" , "Tcount"]
     b = ["name", "email", "presentation", "idea", "objective", "review"]
     for line in cursor:
         list1.append(dict(zip(b, line)))
     conn.close()
-    return render_template("feedbackshow.html", feedback=list1 , len=len(list1)) if len(list1) != 0 else "No Feedback in database"
+    return render_template("feedbackshow.html", feedback=list1, stat=dict(zip(b1,cursor1))) if len(
+        list1) != 0 else "No Feedback in database"
 
 
 @app.route("/matchFixture", methods=["GET", "POST"])
