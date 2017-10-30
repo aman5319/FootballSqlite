@@ -53,7 +53,7 @@ def editTeam(teamName):
                       about=about,
                       operation="update")
         print(request.form)
-        flash("You Just Edited a Team  " + teamName , "message")
+        flash("You Just Edited a Team  " + teamName, "message")
         return redirect(url_for("showTeam"))
 
 
@@ -158,7 +158,7 @@ def deleteTeam(teamName):
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
         conn.commit()
         conn.close()
-        flash("You Just Deleted a Team" + teamName )
+        flash("You Just Deleted a Team" + teamName)
         return redirect(url_for("showTeam"))
 
 
@@ -303,6 +303,11 @@ def matchFixture():
 @app.route("/topTeam")
 def topTeam():
     return render_template("topTeam.html")
+
+
+@app.errorhandler(404)
+def handleerror(e):
+    return render_template("error.html")
 
 
 if __name__ == '__main__':

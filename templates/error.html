@@ -1,22 +1,14 @@
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>ERROR 404</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-<style type="text/css">
-.logo{
-	width:430px;
-	position:absolute;
-	top:25%;
-	left:35%;
-}
-</style>
-</head>
-<body>
-<div class="logo">
+{% extends "layout.html" %}
+{% block content %}
+    <br><br>
+    <div style="width: 430px;top: 25%;left: 35%;position:relative;">
         <img src="../static/404.png">
-        <p><a href="index.html">Go back to Home</a></p>
+        <a href="{{ url_for('teamInfo') }}"
+           class="waves-effect waves-light btn">
+            <i class="material-icons left">arrow_back
+            </i>Go Back</a>
+
     </div>
-</div>
-</body>
-</html>
+    </div>
+
+{% endblock %}
