@@ -31,7 +31,6 @@ def editTeam(teamName):
              "country",
              "about"]
         teamInfo = dict(zip(b, cursor))
-        print(teamInfo)
         conn.close()
         return render_template("teamEditForm.html", teamInfo=teamInfo)
 
@@ -52,7 +51,6 @@ def editTeam(teamName):
                       country=request.form.get("country", None),
                       about=about,
                       operation="update")
-        print(request.form)
         flash("You Just Edited a Team  " + teamName, "message")
         return redirect(url_for("showTeam"))
 
@@ -91,13 +89,21 @@ def teamInfo():
             cursor = conn.execute("SELECT  TEAM_NAME FROM TEAM ")
             b = ["teamName"]
             list1 = []
+
+            cursor1 = conn.execute("SELECT PLAYER_NAME  FROM PLAYER ").fetchall()
+            z = [dict(zip(["playerName"], line)) for line in cursor1]
             for line in cursor:
                 list1.append(dict(zip(b, line)))
             conn.close()
-            return render_template("index.html", teamNamess=list1)
+            return render_template("index.html", teamNamess=list1, player_list=z)
         elif request.method == "POST":
-            pass
-    except:
+            conn = sqlite3.connect("football.db")
+            cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
+                                   (request.form.get("searchBox", None),)).fetchone()
+            conn.close()
+            return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
+    except Exception as e:
+        print(e)
         return render_template("index.html")
 
 
@@ -154,7 +160,6 @@ def viewTeam(teamName):
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
 def deleteTeam(teamName):
     if request.method == "POST":
-        print(request.url, "  ", teamName)
         conn = sqlite3.connect("football.db")
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
@@ -204,7 +209,7 @@ def addPlayers(teamName):
                        about=about,
                        operation="insert",
                        oldPlayerid="")
-        flash("You Just Added " + request.form.get("playerName", None) + " in "+ teamName)
+        flash("You Just Added " + request.form.get("playerName", None) + " in " + teamName)
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
         return render_template("playerAddForm.html")
@@ -230,7 +235,7 @@ def editPlayers(teamName, playerId):
                        about=about,
                        operation="update",
                        oldPlayerid=playerId)
-        flash("You Just Updated " + request.form.get("playerName" , None)+" Information", "message")
+        flash("You Just Updated " + request.form.get("playerName", None) + " Information", "message")
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
         conn = sqlite3.connect("football.db")
@@ -259,7 +264,7 @@ def deletePlayers(teamName, playerId):
         conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''', (playerId,))
         conn.commit()
         conn.close()
-        flash("you just deleted a player from " + teamName , "message")
+        flash("you just deleted a player from " + teamName, "message")
         return redirect(url_for("teamPlayers", teamName=teamName))
 
 
