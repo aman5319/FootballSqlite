@@ -41,6 +41,13 @@
         </div>
     </div>
 
+    {% if len == 0 %}
+        <br>
+            <h1>No Players in {{ teamNamee }}</h1>
+            <h3>Tap The Blue Circular Button In Corner To Add A Player</h3>
+            <br><br><br>
+            <br>
+        {% endif %}
     <div class="fixed-action-btn">
         <a href="{{ url_for('addPlayers' , teamName=teamNamee) }}"
            class="btn-floating btn-large waves-effect waves-light teal">

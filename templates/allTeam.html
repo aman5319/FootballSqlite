@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+
+
+
     <a href="{{ url_for('teamInfo') }}"
        class="waves-effect waves-light btn">
         <i class="material-icons left">arrow_back
@@ -24,7 +27,7 @@
                                    class="waves-effect waves-teal btn-flat">Update</a>
                                 <form action="{{ url_for('deleteTeam', teamName=team_infor['teamName']) }}"
                                       method="post">
-                                    <input class="waves-effect waves-teal btn-flat"  value="Delete" type="submit"
+                                    <input class="waves-effect waves-teal btn-flat" value="Delete" type="submit"
                                            onClick="return !!confirm('This will delete {{ team_infor["teamName"] }}');"/>
                                 </form>
                             </div>
@@ -38,7 +41,12 @@
                 </div>
             {% endfor %}
         </div>
-
+        {% if len == 0 %}
+            <h1>No Team</h1>
+            <h3>Tap The Blue Circular Button In Corner To Add Team</h3>
+            <br><br><br>
+            <br>
+        {% endif %}
     </div>
     <div class="fixed-action-btn">
         <a href="{{ url_for('addTeam') }}" class="btn-floating btn-large waves-effect waves-light teal">

@@ -95,7 +95,7 @@ def teamInfo():
             for line in cursor:
                 list1.append(dict(zip(b, line)))
             conn.close()
-            return render_template("index.html", teamNamess=list1, player_list=z)
+            return render_template("index.html", teamNamess=list1, player_list=z  )
         elif request.method == "POST":
             conn = sqlite3.connect("football.db")
             cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
@@ -104,7 +104,7 @@ def teamInfo():
             return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
     except Exception as e:
         print(e)
-        return render_template("index.html")
+        return render_template("index.html" )
 
 
 @app.route("/showTeam/")
@@ -128,9 +128,9 @@ def showTeam():
         for line in cursor:
             list1.append(dict(zip(b, line)))
         conn.close()
-        return render_template("allTeam.html", teamInformation=list1)
-    except:
-        return render_template("allTeam.html")
+        return render_template("allTeam.html", teamInformation=list1 , len=len(list1))
+    except Exception as e:
+        return render_template("allTeam.html" )
 
 
 @app.route("/team_view/<string:teamName>")
@@ -181,10 +181,10 @@ def teamPlayers(teamName):
         list1 = []
         for cursor1 in cursor:
             list1.append(dict(zip(b, cursor1)))
-        return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"])
+        return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"] , len=len(list1))
 
     except:
-        return render_template("teamplayers.html", teamNamee=teamName)
+        return render_template("teamplayers.html", teamNamee=teamName , len=0)
     finally:
         conn.close()
 
