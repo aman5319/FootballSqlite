@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+<a href="{{ url_for('showTeam') }}"
+   class="waves-effect waves-light btn">
+    <i class="material-icons left">arrow_back
+    </i>Back To Team</a>
+
+    <div class="container">
     <div class="row">
         {% for a in teamPlayersData %}
         <div class="col s4">

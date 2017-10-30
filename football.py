@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request, flash
 from crudClass import Team
-import sqlite3, os
+import sqlite3, os, smtplib
 
 app = Flask(__name__)
 
@@ -299,6 +299,7 @@ def feedback():
         )
         conn.commit()
         conn.close()
+        sendmail(request.form.get("email", None))
         return redirect(url_for("teamInfo"))
     elif request.method == "GET":
         return render_template("feedback.html")
@@ -320,6 +321,15 @@ def showFeedback():
         list1) != 0 else "No Feedback in database"
 
 
+@app.errorhandler(404)
+def handleerror(e):
+    return render_template("error.html")
+
+
+def sendmail(receviermail):
+    pass
+
+
 @app.route("/matchFixture", methods=["GET", "POST"])
 def matchFixture():
     return render_template("matchFixture.html")
@@ -328,11 +338,6 @@ def matchFixture():
 @app.route("/topTeam")
 def topTeam():
     return render_template("topTeam.html")
-
-
-@app.errorhandler(404)
-def handleerror(e):
-    return render_template("error.html")
 
 
 if __name__ == '__main__':
