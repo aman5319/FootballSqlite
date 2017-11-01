@@ -361,7 +361,9 @@ def matchFixture():
     conn = sqlite3.connect("football.db")
     count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
     print(count)
-    if count % 2 == 0:
+    if count==0:
+        return render_template("back.html")
+    elif count % 2 == 0:
         # fetch all teamname
         team = conn.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
         print(team)
@@ -413,7 +415,7 @@ def matchFixture():
         return render_template("matchFixture.html", fixture=list1, date=list1[0]['date'])
     else:
         conn.close()
-        return "<h1>You need to have even number of Teams</h1>"
+        return render_template("back.html")
 
 
 def deleteMatchRelated():
@@ -473,7 +475,7 @@ def topTeam():
         topTeam = [dict(zip(b, line)) for line in cursor]
         return render_template("topTeam.html", players=topPlayers, team=topTeam)
     else:
-        return "<h1>You need to have even number of Teams</h1>"
+        return render_template("back.html")
 
 
 @app.route("/matchResult")
