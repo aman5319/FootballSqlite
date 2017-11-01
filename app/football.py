@@ -425,7 +425,12 @@ def deleteMatchRelated():
 
 @app.route("/topTeam")
 def topTeam():
-    return render_template("topTeam.html")
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute("SELECT PLAYER_NAME ,NUMBER_OF_GOALS  FROM PLAYER ORDER BY NUMBER_OF_GOALS DESC ").fetchall()
+    b = ["playerName", "goals"]
+    topPlayers = [dict(zip(b, line)) for line in cursor]
+    conn.close()
+    return render_template("topTeam.html", players=topPlayers)
 
 
 if __name__ == '__main__':
