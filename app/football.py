@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, request, flash
 from crudClass import Team
-import sqlite3, os, smtplib
+import sqlite3, os, smtplib, itertools, random, datetime
 
 app = Flask(__name__)
 
@@ -95,7 +95,7 @@ def teamInfo():
             for line in cursor:
                 list1.append(dict(zip(b, line)))
             conn.close()
-            return render_template("index.html", teamNamess=list1, player_list=z  )
+            return render_template("index.html", teamNamess=list1, player_list=z)
         elif request.method == "POST":
             conn = sqlite3.connect("football.db")
             cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
@@ -104,7 +104,7 @@ def teamInfo():
             return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
     except Exception as e:
         print(e)
-        return render_template("index.html" )
+        return render_template("index.html")
 
 
 @app.route("/showTeam/")
@@ -128,9 +128,9 @@ def showTeam():
         for line in cursor:
             list1.append(dict(zip(b, line)))
         conn.close()
-        return render_template("allTeam.html", teamInformation=list1 , len=len(list1))
+        return render_template("allTeam.html", teamInformation=list1, len=len(list1))
     except Exception as e:
-        return render_template("allTeam.html" )
+        return render_template("allTeam.html")
 
 
 @app.route("/team_view/<string:teamName>")
@@ -181,10 +181,11 @@ def teamPlayers(teamName):
         list1 = []
         for cursor1 in cursor:
             list1.append(dict(zip(b, cursor1)))
-        return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"] , len=len(list1))
+        return render_template("teamplayers.html", teamPlayersData=list1, teamNamee=list1[0]["teamName"],
+                               len=len(list1))
 
     except:
-        return render_template("teamplayers.html", teamNamee=teamName , len=0)
+        return render_template("teamplayers.html", teamNamee=teamName, len=0)
     finally:
         conn.close()
 
@@ -340,9 +341,47 @@ def sendmail(receviermail):
     pass
 
 
+def breakIntoGroups(list, size=2):
+    size = max(1, size)
+    return [list[i:i + size] for i in range(0, len(list), size)]
+
+
 @app.route("/matchFixture", methods=["GET", "POST"])
 def matchFixture():
-    return render_template("matchFixture.html")
+    conn = sqlite3.connect("football.db")
+    count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
+    print(count)
+    if count % 2 == 0:
+        # fetch all teamname
+        team = conn.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
+        print(team)
+        # create a list of teamname
+        team1 = [y for x in team for y in x]
+        print(team1)
+        # permutation of team in teamN
+        list1 = list(itertools.permutations(team1, r=2))
+
+        # date format
+        c = datetime.date(2017, 11, 23)
+
+        date1 = c.isoformat()
+        # itearation of permutation
+
+        conn.close()
+        for x in list1:
+            y = list(x)
+            y.append(date1)
+            print(y)
+            conn1 = sqlite3.connect("football.db")
+            conn1.execute("INSERT INTO MATCH_FIXTURE(TEAM1,TEAM2,MATCH_DATE) VALUES (?,?,?)",
+                          tuple(y))
+            conn1.commit()
+
+            conn1.close()
+
+    else:
+        conn.close()
+        return "You need one more team"
 
 
 @app.route("/topTeam")
