@@ -361,7 +361,7 @@ def matchFixture():
     conn = sqlite3.connect("football.db")
     count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
     print(count)
-    if count==0:
+    if count == 0:
         return render_template("back.html")
     elif count % 2 == 0:
         # fetch all teamname
@@ -486,6 +486,55 @@ def matchResult():
     list1 = [dict(zip(b, line)) for line in cursor]
     conn.close()
     return render_template("matchResult.html", result=list1)
+
+
+@app.route("/query1")
+def query1():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE JERSEY_NUMBER=7").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo1.html", cursor=cursor)
+
+
+@app.route("/query2")
+def query2():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute("SELECT PLAYER_NAME , AGE , DATE_OF_BIRTH FROM PLAYER WHERE AGE BETWEEN 20 AND 30").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo2.html", cursor=cursor)
+
+
+@app.route("/query3")
+def query3():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute(
+        "SELECT DISTINCT (WIN)FROM MATCH_VENUE , MATCH_RESULT WHERE MATCH_VENUE.MATCH_ID=MATCH_RESULT.MATCH_ID AND STADIUM='Ainfield'").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo3.html", cursor=cursor)
+
+
+@app.route("/query4")
+def query4():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute(
+        "SELECT max(PLAYER_COST) , min(PLAYER_COST) , sum(PLAYER_COST) ,avg(PLAYER_COST) FROM PLAYER WHERE TEAM_NAME = 'Real Madrid' ").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo4.html", cursor=cursor)
+
+
+@app.route("/query5")
+def query5():
+    conn = sqlite3.connect("football.db")
+    conn.execute("UPDATE PLAYER SET PLAYER_COST = ROUND(1.1* PLAYER_COST) WHERE NUMBER_OF_GOALS > 6")
+    conn.commit()
+    cursor = conn.execute(
+        "SELECT PLAYER_NAME , NUMBER_OF_GOALS , PLAYER_COST FROM PLAYER WHERE NUMBER_OF_GOALS > 6").fetchall()
+    conn.close()
+    return render_template("demo5.html", cursor=cursor)
 
 
 if __name__ == '__main__':

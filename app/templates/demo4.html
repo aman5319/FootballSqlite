@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <td>Max(Player Cost)</td>
+        <td>Min(Player Cost)</td>
+        <td>Sum(Player Cost)</td>
+        <td>Avg(Player Cost)</td>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for line in cursor %}
+        <tr>
+            {% for x in line %}
+
+                <td>{{ x }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
