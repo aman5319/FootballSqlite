@@ -9,24 +9,27 @@
 
 <body>
 <h1 style="color:blue;">MATCH FIXTURE</h1>
- <div class="chip">DATE:11-11-2017</div>
-        
-<table class="striped"> 
-<thead>
-<tr>
-<td>TEAM 1</td>
-<td>TEAM 2</td>
-<td>STADIUM</td>
-<td>LOCATION</td>
-</tr></thead>
-<tbody>
-	<tr>
-	  <td>Manchester</td>
-	  <td>Real Madrid</td>
-	  <td>Old Traven</td>
-	  <td>England</td>
-	</tr>
-</tbody>
+<div class="chip">DATE:11-11-2017</div>
+
+<table class="striped">
+    <thead>
+    <tr>
+        <td>TEAM 1</td>
+        <td>TEAM 2</td>
+        <td>STADIUM</td>
+        <td>LOCATION</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for x in fixture %}
+        <tr>
+            <td>{{ x['team1'] }}</td>
+            <td>{{ x["team2"] }}</td>
+            <td>{{ x["stadium"] }}</td>
+            <td>{{ x["location"] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
 
 </table>
 <!-- Compiled and minified JavaScript -->

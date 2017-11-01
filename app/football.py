@@ -403,7 +403,7 @@ def matchFixture():
 
         conn4 = sqlite3.connect("football.db")
         cursor = conn4.execute(
-            "SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE").fetchall()
+            "SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE WHERE MATCH_VENUE.MATCH_ID=MATCH_FIXTURE.MATCH_ID").fetchall()
         b = ["date", "team1", "team2", "stadium", "location"]
         list1 = []
         for x in cursor:
