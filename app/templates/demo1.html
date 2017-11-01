@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>query</title>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 <body>
-<table>
+<h5>Demonstrate the select operation by retrive the details of all players whose jersy number is 7.</h5><br><br>
+<table class="bodered">
     <thead>
     <tr>
         <td>Player Name</td>
@@ -23,5 +28,10 @@
     {% endfor %}
     </tbody>
 </table>
+<br><br><br>
+<a href="{{ url_for('query2') }}"
+   class="waves-effect waves-light btn right">NEXT
+    <i class="material-icons right">arrow_forward</i></a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </body>
 </html>

@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>query</title>
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 <body>
-<table>
+<h5>Demonstrate the update operation by updating all the Player's Cost by 10% who have scored more than 6 goals.</h5><br><br>
+
+<table class="bodered">
     <thead>
     <tr>
         <td>Player Name</td>
@@ -25,5 +31,10 @@
     {% endfor %}
     </tbody>
 </table>
+<br><br><br>
+<a href="{{ url_for('teamInfo') }}"
+   class="waves-effect waves-light btn right">HOME
+    <i class="material-icons left">home</i></a>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </body>
 </html>
