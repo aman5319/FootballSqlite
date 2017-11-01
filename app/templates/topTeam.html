@@ -27,11 +27,13 @@
                 </thead>
 
                 <tbody>
+                {% for x in team %}
                 <tr>
-                    <td>Real Madrid</td>
-                    <td>6</td>
+                    <td>{{ x['win'] }}</td>
+                    <td>{{ x["count"] }}</td>
 
                 </tr>
+                {% endfor %}
 
                 </tbody>
             </table>
