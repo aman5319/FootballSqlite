@@ -425,46 +425,54 @@ def deleteMatchRelated():
 
 @app.route("/topTeam")
 def topTeam():
-    conn = sqlite3.connect("football.db")
-    cursor = conn.execute("SELECT PLAYER_NAME ,NUMBER_OF_GOALS  FROM PLAYER ORDER BY NUMBER_OF_GOALS DESC ").fetchall()
-    b = ["playerName", "goals"]
-    topPlayers = [dict(zip(b, line)) for line in cursor]
-    conn.close()
+    conn111 = sqlite3.connect("football.db")
+    count = conn111.execute("SELECT count(*) FROM TEAM").fetchone()[0]
+    print(count)
+    conn111.close()
+    if count % 2 == 0:
+        conn = sqlite3.connect("football.db")
+        cursor = conn.execute(
+            "SELECT PLAYER_NAME ,NUMBER_OF_GOALS  FROM PLAYER ORDER BY NUMBER_OF_GOALS DESC ").fetchall()
+        b = ["playerName", "goals"]
+        topPlayers = [dict(zip(b, line)) for line in cursor]
+        conn.close()
 
-    conn1 = sqlite3.connect("football.db")
-    conn1.execute("DELETE FROM MATCH_RESULT")
-    conn1.commit()
-    conn1.close()
+        conn1 = sqlite3.connect("football.db")
+        conn1.execute("DELETE FROM MATCH_RESULT")
+        conn1.commit()
+        conn1.close()
 
-    conn2 = sqlite3.connect("football.db")
-    team = conn2.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
-    print(team)
-    # create a list of teamname
-    team1 = [y for x in team for y in x]
-    print(team1)
-    # permutation of team in teamN
-    list1 = list(itertools.permutations(team1, r=2))
+        conn2 = sqlite3.connect("football.db")
+        team = conn2.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
+        print(team)
+        # create a list of teamname
+        team1 = [y for x in team for y in x]
+        print(team1)
+        # permutation of team in teamN
+        list1 = list(itertools.permutations(team1, r=2))
 
-    conn2 = sqlite3.connect("football.db")
-    countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
-    count2 = [y for x in countTuple for y in x]
-    conn2.close()
+        conn2 = sqlite3.connect("football.db")
+        countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
+        count2 = [y for x in countTuple for y in x]
+        conn2.close()
 
-    for i, x in enumerate(list1):
-        list111 = list(x)
-        random.shuffle(list111)
-        list12 = count2[i]
-        print(type(list12))
-        counnection = sqlite3.connect("football.db")
-        counnection.execute("INSERT INTO MATCH_RESULT(MATCH_ID, WIN, LOSE) VALUES (?,?,?)",
-                            (list12, list111[0], list111[1]))
-        counnection.commit()
-        counnection.close()
-    conn122 = sqlite3.connect("football.db")
-    cursor = conn122.execute("SELECT WIN,count(WIN) FROM MATCH_RESULT GROUP BY WIN ORDER BY count(WIN)DESC")
-    b = ["win", "count"]
-    topTeam = [dict(zip(b, line)) for line in cursor]
-    return render_template("topTeam.html", players=topPlayers, team=topTeam)
+        for i, x in enumerate(list1):
+            list111 = list(x)
+            random.shuffle(list111)
+            list12 = count2[i]
+            print(type(list12))
+            counnection = sqlite3.connect("football.db")
+            counnection.execute("INSERT INTO MATCH_RESULT(MATCH_ID, WIN, LOSE) VALUES (?,?,?)",
+                                (list12, list111[0], list111[1]))
+            counnection.commit()
+            counnection.close()
+        conn122 = sqlite3.connect("football.db")
+        cursor = conn122.execute("SELECT WIN,count(WIN) FROM MATCH_RESULT GROUP BY WIN ORDER BY count(WIN)DESC")
+        b = ["win", "count"]
+        topTeam = [dict(zip(b, line)) for line in cursor]
+        return render_template("topTeam.html", players=topPlayers, team=topTeam)
+    else:
+        return "<h1>You need to have even number of Teams</h1>"
 
 
 if __name__ == '__main__':
