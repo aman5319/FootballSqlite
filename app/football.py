@@ -338,7 +338,15 @@ def handleerror(e):
 
 
 def sendmail(receviermail):
-    pass
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login("aniketcr777@gmail.com", "aniketcr777")
+
+    msg = "Thanks for your valuable feedback. \n" \
+          "Warm regards \n" \
+          "Football Database Management Team"
+    server.sendmail("aniketcr777@gmail.com", receviermail, msg)
+    server.quit()
 
 
 def breakIntoGroups(list, size=2):
