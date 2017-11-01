@@ -392,7 +392,7 @@ def matchFixture():
         countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
         count2 = [y for x in countTuple for y in x]
         conn2.close()
-        location = {"Manchester": "Old Trafford", "London": "Stamford Bridge", "Liverpool": "Ainfield"}
+        location = {"Birminghan": "Old Trafford", "North London": "Stamford Bridge", "Everton": "Ainfield"}
         for x in count2:
             randomLocation = random.choice(list(location.keys()))
             conn3 = sqlite3.connect("football.db")
@@ -404,13 +404,12 @@ def matchFixture():
         conn4 = sqlite3.connect("football.db")
         cursor = conn4.execute(
             "SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE WHERE MATCH_VENUE.MATCH_ID=MATCH_FIXTURE.MATCH_ID").fetchall()
-        b = ["date", "team1", "team2", "stadium", "location"]
+        b = ["date", "team1", "team2", "location", "stadium"]
         list1 = []
         for x in cursor:
             list1.append(dict(zip(b, x)))
-        print(list1)
         conn4.close()
-        return render_template("matchFixture.html", fixture=list1)
+        return render_template("matchFixture.html", fixture=list1, date=list1[0]['date'])
     else:
         conn.close()
         return "<h1>You need to have even number of Teams</h1>"
