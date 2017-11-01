@@ -55,7 +55,20 @@
     {% if messages %}
         {% for category, message in messages %}
             <script>
-                Materialize.toast('{{ message }}', 3000 , "rounded")
+
+                var something = (function () {
+                    var executed = false;
+                    return function () {
+                        if (!executed) {
+                            executed = true;
+                            // do something
+                            Materialize.toast('{{ message }}', 3000, "rounded");
+
+                        }
+                    };
+                })();
+                something();
+
             </script>
         {% endfor %}
     {% endif %}

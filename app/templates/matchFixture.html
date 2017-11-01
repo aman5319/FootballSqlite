@@ -8,9 +8,18 @@
 </head>
 
 <body>
-<h1 style="color: black;"><div class="col s12 m2">
-   <div class="card-panel  cyan darken-2"> MATCH FIXTURE</h1></div>
+
+<a href="{{ url_for('teamInfo') }}"
+   class="waves-effect waves-light btn">
+    <i class="material-icons left">arrow_back
+    </i>Home</a>
+
+<h1 style="color: black;">
+    <div class="col s12 m2">
+        <div class="card-panel  cyan darken-2"> MATCH FIXTURE
+        </div>
     </div>
+</h1>
 
 
 <table class="striped">
@@ -34,7 +43,6 @@
     </tbody>
 
 </table>
-<!-- Compiled and minified JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </body>
 </html>
