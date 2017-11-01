@@ -8,24 +8,29 @@
 </head>
 
 <body>
-<h1 style="color: black;"><div class="col s12 m2">
-   <div class="card-panel  cyan darken-2"> MATCH RESULT</h1></div>
+<h1 style="color: black;">
+    <div class="col s12 m2">
+        <div class="card-panel  cyan darken-2"> MATCH RESULT</div>
+    </div>
+</h1>
+
+
+<div class="row">
+    <div class="col s6 green center"><h4>WINS</h4><br>
+        {% for x in result %}
+            <h5 style="color:white">{{ x['win'] }}</h5>
+            <br>
+        {% endfor %}
     </div>
 
 
-
- <div class="row">
-
-      <div class="col s6 green"><h4>WINS</h4><br>
-       <h5 style="color:white">team name</h5>
-      </div>
-
-      <div class="col s6 red"><h4>LOSES</h4><br>
-       <h5 style="color:white">team name</h5>
-      </div>
-
+    <div class="col s6 red center"><h4>LOSES</h4><br>
+        {% for x in result %}
+            <h5 style="color:white">{{ x['lose'] }}</h5>
+            <br>
+        {% endfor %}
     </div>
-          
-	
-	</body>
+</div>
+
+</body>
 </html>

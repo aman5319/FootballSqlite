@@ -100,8 +100,14 @@ def teamInfo():
             conn = sqlite3.connect("football.db")
             cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
                                    (request.form.get("searchBox", None),)).fetchone()
+
             conn.close()
-            return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
+            print("cursor1 is none")
+            if not (cursor1 is None):
+                return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
+            else:
+                return render_template("error.html")
+
     except Exception as e:
         print(e)
         return render_template("index.html")
@@ -349,11 +355,6 @@ def sendmail(receviermail):
     server.quit()
 
 
-def breakIntoGroups(list, size=2):
-    size = max(1, size)
-    return [list[i:i + size] for i in range(0, len(list), size)]
-
-
 @app.route("/matchFixture", methods=["GET", "POST"])
 def matchFixture():
     deleteMatchRelated()
@@ -473,6 +474,16 @@ def topTeam():
         return render_template("topTeam.html", players=topPlayers, team=topTeam)
     else:
         return "<h1>You need to have even number of Teams</h1>"
+
+
+@app.route("/matchResult")
+def matchResult():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute("SELECT WIN , LOSE FROM MATCH_RESULT")
+    b = ["win", "lose"]
+    list1 = [dict(zip(b, line)) for line in cursor]
+    conn.close()
+    return render_template("matchResult.html", result=list1)
 
 
 if __name__ == '__main__':
