@@ -3,9 +3,12 @@ import sqlite3, datetime, random, itertools
 
 def inside():
     conn = sqlite3.connect("football.db")
-    conn.execute("DELETE FROM MATCH_FIXTURE")
+    cursor = conn.execute("SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE").fetchall()
+    for x in cursor:
+        print(x)
     conn.commit()
     conn.close()
+
 
 
 if __name__ == '__main__':

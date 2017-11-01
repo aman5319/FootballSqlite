@@ -348,6 +348,7 @@ def breakIntoGroups(list, size=2):
 
 @app.route("/matchFixture", methods=["GET", "POST"])
 def matchFixture():
+    deleteMatchRelated()
     conn = sqlite3.connect("football.db")
     count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
     print(count)
@@ -379,9 +380,40 @@ def matchFixture():
 
             conn1.close()
 
+        conn2 = sqlite3.connect("football.db")
+        countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
+        count2 = [y for x in countTuple for y in x]
+        conn2.close()
+        location = {"Manchester": "Old Trafford", "London": "Stamford Bridge", "Liverpool": "Ainfield"}
+        for x in count2:
+            randomLocation = random.choice(list(location.keys()))
+            conn3 = sqlite3.connect("football.db")
+            conn3.execute("INSERT INTO MATCH_VENUE(MATCH_ID, LOCATION, STADIUM) VALUES (?,?,?)",
+                          (x, randomLocation, location[randomLocation],))
+            conn3.commit()
+            conn3.close()
+
+        conn4 = sqlite3.connect("football.db")
+        cursor = conn4.execute(
+            "SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE").fetchall()
+        b = ["date", "team1", "team2", "stadium", "location"]
+        list1 = []
+        for x in cursor:
+            list1.append(dict(zip(b, x)))
+        print(list1)
+        conn4.close()
+        return render_template("matchFixture.html", fixture=list1)
     else:
         conn.close()
-        return "You need one more team"
+        return "<h1>You need to have even number of Teams</h1>"
+
+
+def deleteMatchRelated():
+    conn11 = sqlite3.connect("football.db")
+    conn11.execute("DELETE FROM MATCH_VENUE")
+    conn11.execute("DELETE FROM MATCH_FIXTURE ")
+    conn11.commit()
+    conn11.close()
 
 
 @app.route("/topTeam")
