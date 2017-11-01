@@ -1,6 +1,13 @@
-import sqlite3
+import sqlite3, datetime, random, itertools
 
-conn = sqlite3.connect("football.db")
-cursor = conn.execute("Drop TABLE FEEDBACK")
-conn.commit()
-conn.close()
+
+def inside():
+    conn = sqlite3.connect("football.db")
+    conn.execute("DELETE FROM MATCH_FIXTURE")
+    conn.commit()
+    conn.close()
+
+
+if __name__ == '__main__':
+    inside()
+
