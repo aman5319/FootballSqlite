@@ -28,6 +28,42 @@ def load_user(id):
     return int(cursor)
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+
+    elif request.method == "POST":
+        conn = sqlconnection()
+        username = request.form['username']
+
+        cursor = conn.execute("SELECT  USERNAME , EMAIL FROM USERS WHERE USERNAME=?", (username,)).fetchone()
+        cursor1 = conn.execute("SELECT EMAIL FROM USERS WHERE EMAIL=?", (request.form["email"],)).fetchone()
+
+        print(cursor, cursor1)
+        if cursor:
+            flash("Dude you need to take some different username")
+            return render_template("register.html")
+        elif cursor1:
+            flash("Dude you need to take some different email")
+            return render_template("register.html")
+        else:
+            if str(request.form["cpassword"]) == str(request.form['password']):
+                password = argon2.hash(str(request.form['password']))
+                conn.execute("INSERT INTO USERS(USERNAME, PASSWORD, EMAIL, REGISTEREDON) VALUES (?,?,?,?)",
+                             (request.form['username']
+                              , password, request.form['email'], datetime.datetime.utcnow()))
+                conn.commit()
+            else:
+                flash("Dude you need to enter same password")
+                return render_template("register.html")
+        conn.close()
+        flash('User successfully registered')
+        print(session)
+        return redirect(url_for('login'))
+
+
+
 
 @app.route('/test')
 def hello_world():
