@@ -73,6 +73,13 @@ def loginRequired(func):
         return wraps()
 
 
+@app.route("/logout")
+def logout:
+    session.clear()
+    flash("You have been Logged out")
+    return redirect(url_for("teamInfo"))
+
+
 @loginRequired
 @app.route('/login', methods=['GET', 'POST'])
 def login():
