@@ -1,6 +1,8 @@
 from flask import Flask, render_template, url_for, redirect, request, flash
 from crudClass import Team
 import sqlite3, os, smtplib, itertools, random, datetime
+import pygal
+from pygal import style
 
 app = Flask(__name__)
 
@@ -334,8 +336,26 @@ def showFeedback():
     for line in cursor:
         list1.append(dict(zip(b, line)))
     conn.close()
-    return render_template("feedbackshow.html", feedback=list1, stat=dict(zip(b1, cursor1))) if len(
-        list1) != 0 else "No Feedback in database"
+    total = 0
+    if len(list1) > 0:
+        x = dict(zip(b1, cursor1))
+        total = x["Tcount"]
+
+        gauge = pygal.SolidGauge(
+            half_pie=True, inner_radius=0.70,
+            style=pygal.style.styles['default'](value_font_size=10))
+
+        percent_formatter = lambda x: '{:.10g}%'.format(x)
+        gauge.value_formatter = percent_formatter
+
+        gauge.add('Presentation', [{'value': x["pcount"], 'max_value': 100}])
+        gauge.add('Idea', [{'value': x['icount'], 'max_value': 100}])
+        gauge.add('Objective', [{'value': x['ocount'], 'max_value': 100}])
+
+        graph_data = gauge.render_data_uri()
+    else:
+        graph_data = "No Feedback in database"
+    return render_template("feedbackshow.html", feedback=list1, stat=graph_data, stat1=total)
 
 
 @app.errorhandler(404)
@@ -492,7 +512,6 @@ def matchResult():
 def query1():
     conn = sqlite3.connect("football.db")
     cursor = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE JERSEY_NUMBER=7").fetchall()
-    conn.commit()
     conn.close()
     return render_template("demo1.html", cursor=cursor)
 
@@ -501,7 +520,7 @@ def query1():
 def query2():
     conn = sqlite3.connect("football.db")
     cursor = conn.execute("SELECT PLAYER_NAME , AGE , DATE_OF_BIRTH FROM PLAYER WHERE AGE BETWEEN 20 AND 30").fetchall()
-    conn.commit()
+
     conn.close()
     return render_template("demo2.html", cursor=cursor)
 
@@ -511,7 +530,7 @@ def query3():
     conn = sqlite3.connect("football.db")
     cursor = conn.execute(
         "SELECT DISTINCT (WIN)FROM MATCH_VENUE , MATCH_RESULT WHERE MATCH_VENUE.MATCH_ID=MATCH_RESULT.MATCH_ID AND STADIUM='Ainfield'").fetchall()
-    conn.commit()
+
     conn.close()
     return render_template("demo3.html", cursor=cursor)
 
@@ -521,7 +540,7 @@ def query4():
     conn = sqlite3.connect("football.db")
     cursor = conn.execute(
         "SELECT max(PLAYER_COST) , min(PLAYER_COST) , sum(PLAYER_COST) ,avg(PLAYER_COST) FROM PLAYER WHERE TEAM_NAME = 'Real Madrid' ").fetchall()
-    conn.commit()
+
     conn.close()
     return render_template("demo4.html", cursor=cursor)
 
