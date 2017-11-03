@@ -560,7 +560,7 @@ def query5():
 def query6():
     conn = sqlite3.connect("football.db")
     cursor = conn.execute(
-        "SELECT PLAYER_NAME FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION= 'CENTRE HALF BACK' ").fetchall()
+        "SELECT PLAYER_NAME FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
     conn.commit()
     conn.close()
     return render_template("demo6.html", cursor=cursor)
