@@ -5,6 +5,7 @@ import pygal
 from pygal import style
 from passlib.hash import argon2
 from flask_login import LoginManager
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -63,24 +64,26 @@ def register():
         return redirect(url_for('login'))
 
 
-def loginRequired(func):
-    def wraps(*args, **kwargs):
-        if "logged_in" in session:
-            return func(*args, **kwargs)
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
         else:
-            flash("You need to login first")
-            redirect(url_for(login))
-        return wraps()
+            flash('You need to login first.')
+            return redirect(url_for('login'))
+    return wrap
 
 
 @app.route("/logout")
-def logout:
+@login_required
+def logout():
     session.clear()
     flash("You have been Logged out")
     return redirect(url_for("teamInfo"))
 
 
-@loginRequired
+@login_required
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
