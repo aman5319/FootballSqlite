@@ -1,2 +1,4 @@
 flask
 pygal
+flask-login
+passlib
