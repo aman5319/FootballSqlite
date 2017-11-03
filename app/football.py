@@ -1,12 +1,32 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, request, flash, session, g, abort
 from crudClass import Team
 import sqlite3, os, smtplib, itertools, random, datetime
 import pygal
 from pygal import style
+from passlib.hash import argon2
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 
 app = Flask(__name__)
 
 app.secret_key = "!@#$%^&*()a-=afs;'';312$%^&*k-[;.sda,./][p;/'=-0989#$%^&0976678v$%^&*(fdsd21234266OJ^&UOKN4odsbd#$%^&*(sadg7(*&^%32b342gd']"
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+
+def sqlconnection():
+    conn = sqlite3.connect("football.db")
+    return conn
+
+
+@login_manager.user_loader
+def load_user(id):
+    conn = sqlconnection()
+    cursor = conn.execute("SELECT ID FROM USERS WHERE ID=?", (id)).fetchone()[0]
+    conn.close()
+    return int(cursor)
+
 
 
 @app.route('/test')
@@ -16,7 +36,7 @@ def hello_world():
 
 @app.route("/editTeam/<string:teamName>/", methods=["GET", "POST"])
 def editTeam(teamName):
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     if request.method == "GET":
         cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME=?", (teamName,)).fetchone()
         print(os.getcwd())
@@ -87,7 +107,7 @@ def addTeam():
 def teamInfo():
     try:
         if request.method == "GET":
-            conn = sqlite3.connect("football.db")
+            conn = sqlconnection()
             cursor = conn.execute("SELECT  TEAM_NAME FROM TEAM ")
             b = ["teamName"]
             list1 = []
@@ -99,7 +119,7 @@ def teamInfo():
             conn.close()
             return render_template("index.html", teamNamess=list1, player_list=z)
         elif request.method == "POST":
-            conn = sqlite3.connect("football.db")
+            conn = sqlconnection()
             cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
                                    (request.form.get("searchBox", None),)).fetchone()
 
@@ -118,7 +138,7 @@ def teamInfo():
 @app.route("/showTeam/")
 def showTeam():
     try:
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         cursor = conn.execute("SELECT * FROM TEAM ")
         b = ["teamName",
              "teamLogo",
@@ -143,7 +163,7 @@ def showTeam():
 
 @app.route("/team_view/<string:teamName>")
 def viewTeam(teamName):
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
     cursor = conn.execute("SELECT  * FROM TEAM WHERE TEAM_NAME =?", (teamName,)).fetchone()
     cursor1 = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE PLAYER.TEAM_NAME=? ", (teamName,))
@@ -168,7 +188,7 @@ def viewTeam(teamName):
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
 def deleteTeam(teamName):
     if request.method == "POST":
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         conn.execute("DELETE FROM TEAM WHERE TEAM_NAME=?", (teamName,))
         conn.commit()
@@ -179,7 +199,7 @@ def deleteTeam(teamName):
 
 @app.route("/teamPlayers/<string:teamName>")
 def teamPlayers(teamName):
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
     cursor = conn.execute("SELECT  * FROM PLAYER WHERE TEAM_NAME =?", (teamName,))
     try:
@@ -247,7 +267,7 @@ def editPlayers(teamName, playerId):
         flash("You Just Updated " + request.form.get("playerName", None) + " Information", "message")
         return redirect(url_for("teamPlayers", teamName=teamName))
     elif request.method == "GET":
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
         cursor = conn.execute("SELECT * FROM PLAYER WHERE PLAYER_ID =?", (playerId,)).fetchone()
         mydict = {"Goalkeeper": "Goalkeeper",
@@ -267,7 +287,7 @@ def editPlayers(teamName, playerId):
 @app.route("/deleteplayers/<string:teamName>/<int:playerId>", methods=["POST"])
 def deletePlayers(teamName, playerId):
     if request.method == "POST":
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
         conn.execute('''DELETE FROM PLAYER WHERE PLAYER_ID =?''', (playerId,))
@@ -279,7 +299,7 @@ def deletePlayers(teamName, playerId):
 
 @app.route("/viewPlayer/<string:teamName>/<int:playerId>")
 def viewPlayer(teamName, playerId):
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     conn.execute('PRAGMA FOREIGN_KEYS = ON ')
 
     cursor = conn.execute('''SELECT * FROM PLAYER WHERE PLAYER_ID =?''', (playerId,)).fetchone()
@@ -296,7 +316,7 @@ def viewPlayer(teamName, playerId):
 @app.route("/feedback/", methods=["GET", "POST"])
 def feedback():
     if request.method == "POST":
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         presentation = request.form.get("presentation", None)
         idea = request.form.get("idea", None)
         objective = request.form.get("objective", None)
@@ -326,7 +346,7 @@ def feedback():
 
 @app.route("/showfeedBack/")
 def showFeedback():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute("SELECT NAME,EMAIL,PRESENTATION,IDEA,OBJECTIVES,SUGGESTION FROM FEEDBACK")
     cursor1 = conn.execute(
         "SELECT sum(PRESENTATION_COUNT)/COUNT(*) AS pcount ,sum(IDEA_COUNT)/COUNT(*) AS icount ,sum(OBJECTTIVES_COUNT)/COUNT(*) AS ocount , count(*) AS Tcount FROM FEEDBACK").fetchone()
@@ -378,7 +398,7 @@ def sendmail(receviermail):
 @app.route("/matchFixture", methods=["GET", "POST"])
 def matchFixture():
     deleteMatchRelated()
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
     print(count)
     if count == 0:
@@ -404,27 +424,27 @@ def matchFixture():
             y = list(x)
             y.append(date1)
             print(y)
-            conn1 = sqlite3.connect("football.db")
+            conn1 = sqlconnection()
             conn1.execute("INSERT INTO MATCH_FIXTURE(TEAM1,TEAM2,MATCH_DATE) VALUES (?,?,?)",
                           tuple(y))
             conn1.commit()
 
             conn1.close()
 
-        conn2 = sqlite3.connect("football.db")
+        conn2 = sqlconnection()
         countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
         count2 = [y for x in countTuple for y in x]
         conn2.close()
         location = {"Birminghan": "Old Trafford", "North London": "Stamford Bridge", "Everton": "Ainfield"}
         for x in count2:
             randomLocation = random.choice(list(location.keys()))
-            conn3 = sqlite3.connect("football.db")
+            conn3 = sqlconnection()
             conn3.execute("INSERT INTO MATCH_VENUE(MATCH_ID, LOCATION, STADIUM) VALUES (?,?,?)",
                           (x, randomLocation, location[randomLocation],))
             conn3.commit()
             conn3.close()
 
-        conn4 = sqlite3.connect("football.db")
+        conn4 = sqlconnection()
         cursor = conn4.execute(
             "SELECT MATCH_DATE , TEAM1 , TEAM2 , LOCATION , STADIUM   FROM MATCH_FIXTURE ,MATCH_VENUE WHERE MATCH_VENUE.MATCH_ID=MATCH_FIXTURE.MATCH_ID").fetchall()
         b = ["date", "team1", "team2", "location", "stadium"]
@@ -439,7 +459,7 @@ def matchFixture():
 
 
 def deleteMatchRelated():
-    conn11 = sqlite3.connect("football.db")
+    conn11 = sqlconnection()
     conn11.execute("DELETE FROM MATCH_VENUE")
     conn11.execute("DELETE FROM MATCH_FIXTURE ")
     conn11.commit()
@@ -448,24 +468,24 @@ def deleteMatchRelated():
 
 @app.route("/topTeam")
 def topTeam():
-    conn111 = sqlite3.connect("football.db")
+    conn111 = sqlconnection()
     count = conn111.execute("SELECT count(*) FROM TEAM").fetchone()[0]
     print(count)
     conn111.close()
     if count % 2 == 0:
-        conn = sqlite3.connect("football.db")
+        conn = sqlconnection()
         cursor = conn.execute(
             "SELECT PLAYER_NAME ,NUMBER_OF_GOALS  FROM PLAYER ORDER BY NUMBER_OF_GOALS DESC ").fetchall()
         b = ["playerName", "goals"]
         topPlayers = [dict(zip(b, line)) for line in cursor]
         conn.close()
 
-        conn1 = sqlite3.connect("football.db")
+        conn1 = sqlconnection()
         conn1.execute("DELETE FROM MATCH_RESULT")
         conn1.commit()
         conn1.close()
 
-        conn2 = sqlite3.connect("football.db")
+        conn2 = sqlconnection()
         team = conn2.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
         print(team)
         # create a list of teamname
@@ -474,7 +494,7 @@ def topTeam():
         # permutation of team in teamN
         list1 = list(itertools.permutations(team1, r=2))
 
-        conn2 = sqlite3.connect("football.db")
+        conn2 = sqlconnection()
         countTuple = conn2.execute("SELECT MATCH_ID FROM MATCH_FIXTURE").fetchall()
         count2 = [y for x in countTuple for y in x]
         conn2.close()
@@ -484,12 +504,12 @@ def topTeam():
             random.shuffle(list111)
             list12 = count2[i]
             print(type(list12))
-            counnection = sqlite3.connect("football.db")
+            counnection = sqlconnection()
             counnection.execute("INSERT INTO MATCH_RESULT(MATCH_ID, WIN, LOSE) VALUES (?,?,?)",
                                 (list12, list111[0], list111[1]))
             counnection.commit()
             counnection.close()
-        conn122 = sqlite3.connect("football.db")
+        conn122 = sqlconnection()
         cursor = conn122.execute("SELECT WIN,count(WIN) FROM MATCH_RESULT GROUP BY WIN ORDER BY count(WIN)DESC")
         b = ["win", "count"]
         topTeam = [dict(zip(b, line)) for line in cursor]
@@ -500,7 +520,7 @@ def topTeam():
 
 @app.route("/matchResult")
 def matchResult():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute("SELECT WIN , LOSE FROM MATCH_RESULT")
     b = ["win", "lose"]
     list1 = [dict(zip(b, line)) for line in cursor]
@@ -510,7 +530,7 @@ def matchResult():
 
 @app.route("/query1")
 def query1():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE JERSEY_NUMBER=7").fetchall()
     conn.close()
     return render_template("demo1.html", cursor=cursor)
@@ -518,7 +538,7 @@ def query1():
 
 @app.route("/query2")
 def query2():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute("SELECT PLAYER_NAME , AGE , DATE_OF_BIRTH FROM PLAYER WHERE AGE BETWEEN 20 AND 30").fetchall()
 
     conn.close()
@@ -527,7 +547,7 @@ def query2():
 
 @app.route("/query3")
 def query3():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute(
         "SELECT DISTINCT (WIN)FROM MATCH_VENUE , MATCH_RESULT WHERE MATCH_VENUE.MATCH_ID=MATCH_RESULT.MATCH_ID AND STADIUM='Ainfield'").fetchall()
 
@@ -537,7 +557,7 @@ def query3():
 
 @app.route("/query4")
 def query4():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute(
         "SELECT max(PLAYER_COST) , min(PLAYER_COST) , sum(PLAYER_COST) ,avg(PLAYER_COST) FROM PLAYER WHERE TEAM_NAME = 'Real Madrid' ").fetchall()
 
@@ -547,7 +567,7 @@ def query4():
 
 @app.route("/query5")
 def query5():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     conn.execute("UPDATE PLAYER SET PLAYER_COST = ROUND(1.1* PLAYER_COST) WHERE NUMBER_OF_GOALS > 6")
     conn.commit()
     cursor = conn.execute(
@@ -558,7 +578,7 @@ def query5():
 
 @app.route("/query6")
 def query6():
-    conn = sqlite3.connect("football.db")
+    conn = sqlconnection()
     cursor = conn.execute(
         "SELECT PLAYER_NAME FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
     conn.commit()
