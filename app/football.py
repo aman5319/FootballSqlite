@@ -63,6 +63,29 @@ def register():
         return redirect(url_for('login'))
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlconnection()
+        cursor = conn.execute("SELECT USERNAME ,PASSWORD FROM USERS WHERE USERNAME=? ", (username,)).fetchone()
+        conn.close()
+        if cursor is None:
+            flash('Invalid Credentials', 'error')
+            return redirect(url_for('login'))
+        else:
+            if argon2.verify(password, cursor[1]):
+                flash('Logged in successfully')
+                session['logged_in'] = True
+                session['username'] = username
+                print(session)
+                return redirect(url_for('teamInfo'))
+            else:
+                flash('Invalid Credentials', 'error')
+                return redirect(url_for('login'))
 
 
 @app.route('/test')
