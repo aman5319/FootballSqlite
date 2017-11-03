@@ -4,7 +4,7 @@ import sqlite3, os, smtplib, itertools, random, datetime
 import pygal
 from pygal import style
 from passlib.hash import argon2
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_login import LoginManager
 
 app = Flask(__name__)
 
@@ -63,6 +63,17 @@ def register():
         return redirect(url_for('login'))
 
 
+def loginRequired(func):
+    def wraps(*args, **kwargs):
+        if "logged_in" in session:
+            return func(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            redirect(url_for(login))
+        return wraps()
+
+
+@loginRequired
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
