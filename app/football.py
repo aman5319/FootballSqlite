@@ -536,6 +536,16 @@ def query5():
     conn.close()
     return render_template("demo5.html", cursor=cursor)
 
+@app.route("/query6")
+def query6():
+    conn = sqlite3.connect("football.db")
+    cursor = conn.execute(
+        "SELECT PLAYER NAME,FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION= 'CENTRE HALF BACK' ").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo6.html", cursor=cursor)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host="127.0.0.1", port=5000)
