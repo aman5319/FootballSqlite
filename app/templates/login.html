@@ -1,25 +1,38 @@
 {% extends "layout.html" %}
 {% block content %}
-  <form action="" method=post class="form-horizontal">
-    <h2>Signin to FlaskLogin(Todo) Application </h2>
-    <div class="control-group">
-        <div class="controls">
-          <input type="text" id="username" name="username" class="input-xlarge"
-            placeholder="Enter Username" required>
-        </div>
-    </div>
 
-    <div class="control-group">
-        <div class="controls">
-          <input type="password" id="password" name="password" class="input-xlarge"
-            placeholder="Enter Password" required>
-        </div>
-    </div>
 
-    <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn btn-success">Signin</button>
+    <br>
+<br>
+    <div class="row" style="width: 50%;background-position: center">
+        <div class="col s12 ">
+            <div class="card blue-grey darken-1">
+                <div class="card-content white-text">
+                    <span class="card-title">LOGIN</span>
+                    <form action="" method=post class="form-horizontal">
+                        <div class="row">
+                            <div class="input-field col s4">
+                                <input id="name" type="text" required name='username'>
+                                <label for="name">Username</label>
+                            </div>
+                            <div class="input-field col s4">
+                                <input id="password" type="password" required name="password">
+                                <label for="password">Password</label>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="submit" class="btn btn-success">Login</button>
+                                <u> <a href="" style="color: azure; padding-left: 250px">Forgot Password</a></u>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
         </div>
     </div>
-  </form>
 {% endblock %}

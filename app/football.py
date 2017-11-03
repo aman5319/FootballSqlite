@@ -165,6 +165,7 @@ def editTeam(teamName):
 
 
 @app.route("/addTeam/", methods=["POST", "GET"])
+@login_required
 def addTeam():
     if request.method == 'POST':
 
@@ -273,6 +274,7 @@ def viewTeam(teamName):
 
 
 @app.route("/team_delete/<string:teamName>", methods=["POST"])
+@login_required
 def deleteTeam(teamName):
     if request.method == "POST":
         conn = sqlconnection()
@@ -306,6 +308,7 @@ def teamPlayers(teamName):
 
 
 @app.route("/addplayers/<string:teamName>", methods=["GET", "POST"])
+@login_required
 def addPlayers(teamName):
     if request.method == "POST":
         t = Team(teamName)
@@ -332,6 +335,7 @@ def addPlayers(teamName):
 
 
 @app.route("/editplayers/<string:teamName>/<int:playerId>", methods=["GET", "POST"])
+@login_required
 def editPlayers(teamName, playerId):
     if request.method == "POST":
         t = Team(teamName)
@@ -372,6 +376,7 @@ def editPlayers(teamName, playerId):
 
 
 @app.route("/deleteplayers/<string:teamName>/<int:playerId>", methods=["POST"])
+@login_required
 def deletePlayers(teamName, playerId):
     if request.method == "POST":
         conn = sqlconnection()
