@@ -72,6 +72,7 @@ def login_required(f):
         else:
             flash('You need to login first.')
             return redirect(url_for('login'))
+
     return wrap
 
 
@@ -83,30 +84,32 @@ def logout():
     return redirect(url_for("teamInfo"))
 
 
-@login_required
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return render_template('login.html')
-    else:
-        username = request.form['username']
-        password = request.form['password']
-        conn = sqlconnection()
-        cursor = conn.execute("SELECT USERNAME ,PASSWORD FROM USERS WHERE USERNAME=? ", (username,)).fetchone()
-        conn.close()
-        if cursor is None:
-            flash('Invalid Credentials', 'error')
-            return redirect(url_for('login'))
+    if not ('logged_in' in session):
+        if request.method == 'GET':
+            return render_template('login.html')
         else:
-            if argon2.verify(password, cursor[1]):
-                flash('Logged in successfully')
-                session['logged_in'] = True
-                session['username'] = username
-                print(session)
-                return redirect(url_for('teamInfo'))
-            else:
+            username = request.form['username']
+            password = request.form['password']
+            conn = sqlconnection()
+            cursor = conn.execute("SELECT USERNAME ,PASSWORD FROM USERS WHERE USERNAME=? ", (username,)).fetchone()
+            conn.close()
+            if cursor is None:
                 flash('Invalid Credentials', 'error')
                 return redirect(url_for('login'))
+            else:
+                if argon2.verify(password, cursor[1]):
+                    flash('Logged in successfully')
+                    session['logged_in'] = True
+                    session['username'] = username
+                    print(session)
+                    return redirect(url_for('teamInfo'))
+                else:
+                    flash('Invalid Credentials', 'error')
+                    return redirect(url_for('login'))
+    else:
+        return "already loged in"
 
 
 @app.route('/test')
@@ -395,33 +398,38 @@ def viewPlayer(teamName, playerId):
 
 @app.route("/feedback/", methods=["GET", "POST"])
 def feedback():
-    if request.method == "POST":
-        conn = sqlconnection()
-        presentation = request.form.get("presentation", None)
-        idea = request.form.get("idea", None)
-        objective = request.form.get("objective", None)
-        suggestion = request.form.get("review", None) if request.form.get("review",
-                                                                          None).strip() != "" else "No Suggestions"
+    if 'logged_in' in session:
 
-        b = {"Excellent": 100, "Good": 75, "Satisfactory": 50, "Bad": 25}
-        presentation_count = b[presentation]
-        idea_count = b[idea]
-        objective_count = b[idea]
+        if request.method == "POST":
+            conn = sqlconnection()
+            presentation = request.form.get("presentation", None)
+            idea = request.form.get("idea", None)
+            objective = request.form.get("objective", None)
+            suggestion = request.form.get("review", None) if request.form.get("review",
+                                                                              None).strip() != "" else "No Suggestions"
 
-        conn.execute(
-            '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION, PRESENTATION_COUNT, IDEA_COUNT, OBJECTTIVES_COUNT)
-                    VALUES (?,?,?,?,?,?,?,?,?)''',
-            (request.form.get("name", None),
-             request.form.get("email", None),
-             presentation, idea, objective, suggestion,
-             presentation_count, idea_count, objective_count)
-        )
-        conn.commit()
-        conn.close()
-        sendmail(request.form.get("email", None))
-        return redirect(url_for("teamInfo"))
-    elif request.method == "GET":
-        return render_template("feedback.html")
+            b = {"Excellent": 100, "Good": 75, "Satisfactory": 50, "Bad": 25}
+            presentation_count = b[presentation]
+            idea_count = b[idea]
+            objective_count = b[idea]
+
+            conn.execute(
+                '''INSERT  INTO  FEEDBACK(NAME, EMAIL, PRESENTATION, IDEA, OBJECTIVES, SUGGESTION, PRESENTATION_COUNT, IDEA_COUNT, OBJECTTIVES_COUNT)
+                        VALUES (?,?,?,?,?,?,?,?,?)''',
+                (request.form.get("name", None),
+                 request.form.get("email", None),
+                 presentation, idea, objective, suggestion,
+                 presentation_count, idea_count, objective_count)
+            )
+            conn.commit()
+            conn.close()
+            sendmail(request.form.get("email", None))
+            return redirect(url_for("teamInfo"))
+        elif request.method == "GET":
+            return render_template("feedback.html")
+    else:
+        flash("You need to login first")
+        return redirect(url_for("login"))
 
 
 @app.route("/showfeedBack/")

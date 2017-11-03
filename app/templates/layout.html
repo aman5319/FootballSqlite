@@ -26,7 +26,7 @@
     <li><a href="{{ url_for('matchFixture') }}">Match Fixture</a></li>
     <li><a href="{{ url_for('topTeam') }}">Top Team</a></li>
     <li><a href="{{ url_for('matchResult') }}">Match Result</a></li>
-	<li><a href="{{url_for('query1')}}">Queries</a></li>
+    <li><a href="{{ url_for('query1') }}">Queries</a></li>
 </ul>
 <nav>
 
@@ -41,7 +41,14 @@
                 {% endblock %}
 
             </li>
-            <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+            {% if session.logged_in %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+
+            {% endif %}
             <li><a class="dropdown-button" data-activates="dropdown2">Match Related<i
                     class="material-icons right">arrow_drop_down</i></a></li>
             <!-- Dropdown Trigger -->
@@ -92,6 +99,7 @@
                 </a>
 
             </div>
+            <div class="input-field col s2"></div>
         </div>
     </div>
     <div class="footer-copyright">
