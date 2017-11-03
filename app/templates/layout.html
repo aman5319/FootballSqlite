@@ -41,7 +41,7 @@
                 {% endblock %}
 
             </li>
-            {% if session.logged_in %}
+            {% if session.logged_in or session.admin %}
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
             {% else %}

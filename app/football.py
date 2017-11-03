@@ -67,7 +67,7 @@ def register():
 def login_required(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        if 'logged_in' in session:
+        if 'logged_in' in session or 'admin' in session:
             return f(*args, **kwargs)
         else:
             flash('You need to login first.')
@@ -100,16 +100,20 @@ def login():
                 return redirect(url_for('login'))
             else:
                 if argon2.verify(password, cursor[1]):
-                    flash('Logged in successfully')
-                    session['logged_in'] = True
-                    session['username'] = username
-                    print(session)
+                    if username == "admin":
+                        session['admin'] = username
+                        flash('Welcome Admin')
+
+                    else:
+                        flash('Logged in successfully')
+                        session['logged_in'] = True
+                        session['username'] = username
                     return redirect(url_for('teamInfo'))
                 else:
                     flash('Invalid Credentials', 'error')
                     return redirect(url_for('login'))
     else:
-        return "already loged in"
+        return "already logged in"
 
 
 @app.route('/test')
@@ -434,37 +438,39 @@ def feedback():
 
 @app.route("/showfeedBack/")
 def showFeedback():
-    conn = sqlconnection()
-    cursor = conn.execute("SELECT NAME,EMAIL,PRESENTATION,IDEA,OBJECTIVES,SUGGESTION FROM FEEDBACK")
-    cursor1 = conn.execute(
-        "SELECT sum(PRESENTATION_COUNT)/COUNT(*) AS pcount ,sum(IDEA_COUNT)/COUNT(*) AS icount ,sum(OBJECTTIVES_COUNT)/COUNT(*) AS ocount , count(*) AS Tcount FROM FEEDBACK").fetchone()
-    list1 = []
-    b1 = ["pcount", "icount", "ocount", "Tcount"]
-    b = ["name", "email", "presentation", "idea", "objective", "review"]
-    for line in cursor:
-        list1.append(dict(zip(b, line)))
-    conn.close()
-    total = 0
-    if len(list1) > 0:
-        x = dict(zip(b1, cursor1))
-        total = x["Tcount"]
+    if 'admin' in session:
+        conn = sqlconnection()
+        cursor = conn.execute("SELECT NAME,EMAIL,PRESENTATION,IDEA,OBJECTIVES,SUGGESTION FROM FEEDBACK")
+        cursor1 = conn.execute(
+            "SELECT sum(PRESENTATION_COUNT)/COUNT(*) AS pcount ,sum(IDEA_COUNT)/COUNT(*) AS icount ,sum(OBJECTTIVES_COUNT)/COUNT(*) AS ocount , count(*) AS Tcount FROM FEEDBACK").fetchone()
+        list1 = []
+        b1 = ["pcount", "icount", "ocount", "Tcount"]
+        b = ["name", "email", "presentation", "idea", "objective", "review"]
+        for line in cursor:
+            list1.append(dict(zip(b, line)))
+        conn.close()
+        total = 0
+        if len(list1) > 0:
+            x = dict(zip(b1, cursor1))
+            total = x["Tcount"]
 
-        gauge = pygal.SolidGauge(
-            half_pie=True, inner_radius=0.70,
-            style=pygal.style.styles['default'](value_font_size=10))
+            gauge = pygal.SolidGauge(
+                half_pie=True, inner_radius=0.70,
+                style=pygal.style.styles['default'](value_font_size=10))
 
-        percent_formatter = lambda x: '{:.10g}%'.format(x)
-        gauge.value_formatter = percent_formatter
+            percent_formatter = lambda x: '{:.10g}%'.format(x)
+            gauge.value_formatter = percent_formatter
 
-        gauge.add('Presentation', [{'value': x["pcount"], 'max_value': 100}])
-        gauge.add('Idea', [{'value': x['icount'], 'max_value': 100}])
-        gauge.add('Objective', [{'value': x['ocount'], 'max_value': 100}])
+            gauge.add('Presentation', [{'value': x["pcount"], 'max_value': 100}])
+            gauge.add('Idea', [{'value': x['icount'], 'max_value': 100}])
+            gauge.add('Objective', [{'value': x['ocount'], 'max_value': 100}])
 
-        graph_data = gauge.render_data_uri()
+            graph_data = gauge.render_data_uri()
+        else:
+            graph_data = "No Feedback in database"
+        return render_template("feedbackshow.html", feedback=list1, stat=graph_data, stat1=total)
     else:
-        graph_data = "No Feedback in database"
-    return render_template("feedbackshow.html", feedback=list1, stat=graph_data, stat1=total)
-
+        return "Need Admin Login"
 
 @app.errorhandler(404)
 def handleerror(e):
