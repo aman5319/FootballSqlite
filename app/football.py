@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, session, g, abort
+from flask import Flask, render_template, url_for, redirect, request, flash, session, g, abort, jsonify
 from crudClass import Team
 import sqlite3, os, smtplib, itertools, random, datetime
 import pygal
@@ -6,6 +6,7 @@ from pygal import style
 from passlib.hash import argon2
 from flask_login import LoginManager
 from functools import wraps
+from twilio.rest import Client
 
 app = Flask(__name__)
 
@@ -36,14 +37,13 @@ def register():
 
     elif request.method == "POST":
         conn = sqlconnection()
-        username = request.form['username']
 
-        cursor = conn.execute("SELECT  USERNAME , EMAIL FROM USERS WHERE USERNAME=?", (username,)).fetchone()
+        cursor = conn.execute("SELECT  PHONENUMBER FROM USERS WHERE PHONENUMBER=?",
+                              (request.form.get("phone", 0),)).fetchone()
         cursor1 = conn.execute("SELECT EMAIL FROM USERS WHERE EMAIL=?", (request.form["email"],)).fetchone()
 
-        print(cursor, cursor1)
         if cursor:
-            flash("Dude you need to take some different username")
+            flash("Dude you need to take some different a Phone Number")
             return render_template("register.html")
         elif cursor1:
             flash("Dude you need to take some different email")
@@ -51,16 +51,16 @@ def register():
         else:
             if str(request.form["cpassword"]) == str(request.form['password']):
                 password = argon2.hash(str(request.form['password']))
-                conn.execute("INSERT INTO USERS(USERNAME, PASSWORD, EMAIL, REGISTEREDON) VALUES (?,?,?,?)",
-                             (request.form['username']
-                              , password, request.form['email'], datetime.datetime.utcnow()))
+                conn.execute(
+                    "INSERT INTO USERS(FULLNAME, PASSWORD, EMAIL, REGISTEREDON  , PHONENUMBER) VALUES (?,?,?,? , ?)",
+                    (request.form['username']
+                     , password, request.form['email'], datetime.datetime.utcnow(), request.form.get("phone", 0)))
                 conn.commit()
             else:
                 flash("Dude you need to enter same password")
                 return render_template("register.html")
         conn.close()
         flash('User successfully registered')
-        print(session)
         return redirect(url_for('login'))
 
 
@@ -90,30 +90,106 @@ def login():
         if request.method == 'GET':
             return render_template('login.html')
         else:
-            username = request.form['username']
+            phone = request.form['phone']
             password = request.form['password']
             conn = sqlconnection()
-            cursor = conn.execute("SELECT USERNAME ,PASSWORD FROM USERS WHERE USERNAME=? ", (username,)).fetchone()
+            cursor = conn.execute("SELECT PHONENUMBER ,PASSWORD FROM USERS WHERE PHONENUMBER=? ", (phone,)).fetchone()
             conn.close()
             if cursor is None:
                 flash('Invalid Credentials', 'error')
                 return redirect(url_for('login'))
             else:
                 if argon2.verify(password, cursor[1]):
-                    if username == "admin":
-                        session['admin'] = username
+                    if phone == "8197056461":
+                        session['admin'] = "admin"
                         flash('Welcome Admin')
 
                     else:
                         flash('Logged in successfully')
                         session['logged_in'] = True
-                        session['username'] = username
+                        session['phone'] = phone
                     return redirect(url_for('teamInfo'))
                 else:
                     flash('Invalid Credentials', 'error')
                     return redirect(url_for('login'))
     else:
         return "already logged in"
+
+
+def send_confirmation_code(to_number):
+    verification_code = generate_code()
+    send_sms(to_number, verification_code)
+    session['verification_code'] = verification_code
+    session['phone'] = to_number
+    return verification_code
+
+
+def generate_code():
+    return str(random.randrange(100000, 999999))
+
+
+
+def send_sms(to_number, body):
+    account_sid = "ACfd45034bed17278218be3bea65bb3aef"
+    auth_token = "237ad00d1a4e907e055b3af46f50bd44"
+    twilio_number = "+1 479-777-2571"
+    body = "Your one time password is " + body
+    client = Client(account_sid, auth_token)
+    client.api.messages.create(to_number,
+                               from_=twilio_number,
+                               body=body)
+
+
+@app.route("/verifypassword", methods=["GET", "POST"])
+def verifypassword():
+    if request.method == "GET":
+        return render_template("verifypassword.html", tad1=True)
+    elif request.method == "POST":
+        if not ("OTP" in request.form):
+            phone = request.form.get("phone", 0)
+            conn = sqlconnection()
+            cursor = conn.execute("SELECT PHONENUMBER  FROM USERS WHERE PHONENUMBER=? ", (phone,)).fetchone()
+            conn.close()
+            if cursor is None:
+                flash('Invalid Credentials', 'error')
+                return render_template("verifypassword.html", tad1=True)
+            else:
+                phone = "+91" + phone
+                send_confirmation_code(phone)
+                return render_template("verifypassword.html", tad1=False)
+        elif "OTP" in request.form:
+            otp = request.form.get("OTP", 0)
+            if "verification_code" in session:
+                if otp == session["verification_code"]:
+                    return redirect(url_for("changepassword"))
+                else:
+                    flash("Wrong OTP")
+                    return render_template("verifypassword.html", tad1=False)
+
+
+@app.route("/changedpassword", methods=["GET", "POST"])
+def changepassword():
+    if request.method == "GET":
+        if "phone" in session:
+            return render_template("passwordchange.html")
+    elif request.method == "POST":
+        if str(request.form["cpassword"]) == str(request.form['password']):
+            if "phone" in session:
+                phone = session["phone"]
+                phone = phone.partition("+91")[2]
+                password = argon2.hash(str(request.form['password']))
+
+                conn = sqlconnection()
+                conn.execute("UPDATE USERS SET PASSWORD = ? WHERE PHONENUMBER =?", (password, phone , ))
+                conn.commit()
+                conn.close()
+                flash("Password Updated Succesfully")
+                session.pop("phone")
+                session.pop("verification_code")
+                return redirect(url_for("login"))
+        else:
+            flash("enter the same password")
+            return redirect(url_for("changepassword"))
 
 
 @app.route('/test')
@@ -191,6 +267,7 @@ def addTeam():
         return render_template("teamAddForm.html")
 
 
+@app.route("/json")
 @app.route("/", methods=["GET", "POST"])
 def teamInfo():
     try:
@@ -205,21 +282,23 @@ def teamInfo():
             for line in cursor:
                 list1.append(dict(zip(b, line)))
             conn.close()
-            return render_template("index.html", teamNamess=list1, player_list=z)
+            rule = request.url_rule
+            if request.path == "/":
+                return render_template("index.html", teamNamess=list1, player_list=z)
+            else:
+                return jsonify(list1)
         elif request.method == "POST":
             conn = sqlconnection()
             cursor1 = conn.execute("SELECT TEAM_NAME, PLAYER_ID FROM PLAYER WHERE PLAYER_NAME =? ",
                                    (request.form.get("searchBox", None),)).fetchone()
 
             conn.close()
-            print("cursor1 is none")
             if not (cursor1 is None):
                 return redirect(url_for("viewPlayer", teamName=cursor1[0], playerId=cursor1[1]))
             else:
                 return render_template("error.html")
 
     except Exception as e:
-        print(e)
         return render_template("index.html")
 
 
@@ -477,6 +556,7 @@ def showFeedback():
     else:
         return "Need Admin Login"
 
+
 @app.errorhandler(404)
 def handleerror(e):
     return render_template("error.html")
@@ -499,16 +579,13 @@ def matchFixture():
     deleteMatchRelated()
     conn = sqlconnection()
     count = conn.execute("SELECT count(*) FROM TEAM").fetchone()[0]
-    print(count)
     if count == 0:
         return render_template("back.html")
     elif count % 2 == 0:
         # fetch all teamname
         team = conn.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
-        print(team)
         # create a list of teamname
         team1 = [y for x in team for y in x]
-        print(team1)
         # permutation of team in teamN
         list1 = list(itertools.permutations(team1, r=2))
 
@@ -522,7 +599,6 @@ def matchFixture():
         for x in list1:
             y = list(x)
             y.append(date1)
-            print(y)
             conn1 = sqlconnection()
             conn1.execute("INSERT INTO MATCH_FIXTURE(TEAM1,TEAM2,MATCH_DATE) VALUES (?,?,?)",
                           tuple(y))
@@ -569,7 +645,6 @@ def deleteMatchRelated():
 def topTeam():
     conn111 = sqlconnection()
     count = conn111.execute("SELECT count(*) FROM TEAM").fetchone()[0]
-    print(count)
     conn111.close()
     if count % 2 == 0:
         conn = sqlconnection()
@@ -586,10 +661,8 @@ def topTeam():
 
         conn2 = sqlconnection()
         team = conn2.execute("SELECT TEAM_NAME FROM TEAM").fetchall()
-        print(team)
         # create a list of teamname
         team1 = [y for x in team for y in x]
-        print(team1)
         # permutation of team in teamN
         list1 = list(itertools.permutations(team1, r=2))
 
@@ -602,7 +675,6 @@ def topTeam():
             list111 = list(x)
             random.shuffle(list111)
             list12 = count2[i]
-            print(type(list12))
             counnection = sqlconnection()
             counnection.execute("INSERT INTO MATCH_RESULT(MATCH_ID, WIN, LOSE) VALUES (?,?,?)",
                                 (list12, list111[0], list111[1]))
