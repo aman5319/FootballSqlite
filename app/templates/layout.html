@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <title>Football Database Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -13,78 +12,77 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
+<header>    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="https://github.com/aman5319/" target="_blank">Aman Kumar Pandey</a></li>
+        <li><a href="https://github.com/aniketsingh777/" target="_blank">Aniket Kumar Singh</a></li>
+        <li><a href="https://github.com/keepcalmncode" target="_blank">Kali Kiran Kumar K</a></li>
+        <li><a href="https://github.com/VManeeshK" target="_blank">Maneesh V Kumar</a></li>
+    </ul>
 
-<!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-    <li><a href="https://github.com/aman5319/" target="_blank">Aman Kumar Pandey</a></li>
-    <li><a href="https://github.com/aniketsingh777/" target="_blank">Aniket Kumar Singh</a></li>
-    <li><a href="https://github.com/keepcalmncode" target="_blank">Kali Kiran Kumar K</a></li>
-    <li><a href="https://github.com/VManeeshK" target="_blank">Maneesh V Kumar</a></li>
-</ul>
+    <ul id="dropdown2" class="dropdown-content">
+        <li><a href="{{ url_for('matchFixture') }}">Match Fixture</a></li>
+        <li><a href="{{ url_for('topTeam') }}">Top Team</a></li>
+        <li><a href="{{ url_for('matchResult') }}">Match Result</a></li>
+        <li><a href="{{ url_for('query1') }}">Queries</a></li>
+    </ul>
+    <nav>
 
-<ul id="dropdown2" class="dropdown-content">
-    <li><a href="{{ url_for('matchFixture') }}">Match Fixture</a></li>
-    <li><a href="{{ url_for('topTeam') }}">Top Team</a></li>
-    <li><a href="{{ url_for('matchResult') }}">Match Result</a></li>
-    <li><a href="{{ url_for('query1') }}">Queries</a></li>
-</ul>
-<nav>
+        <div class="nav-wrapper green darken-1">
+            <a href="{{ url_for('teamInfo') }}" class="brand-logo">Football Database Management System</a>
 
-    <div class="nav-wrapper green darken-1">
-        <a href="{{ url_for('teamInfo') }}" class="brand-logo">Football Database Management System</a>
+            <ul class="right hide-on-med-and-down">
 
-        <ul class="right hide-on-med-and-down">
+                <li>
+                    {% block datalist %}
 
-            <li>
-                {% block datalist %}
+                    {% endblock %}
 
-                {% endblock %}
+                </li>
+                {% if session.logged_in or session.admin %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
 
-            </li>
-            {% if session.logged_in or session.admin %}
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
-            {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+                <li><a class="dropdown-button" data-activates="dropdown2">Match Related<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
+                <!-- Dropdown Trigger -->
+                <li><a class="dropdown-button" data-activates="dropdown1">Team Members<i
+                        class="material-icons right">arrow_drop_down</i></a></li>
+            </ul>
 
-            {% endif %}
-            <li><a class="dropdown-button" data-activates="dropdown2">Match Related<i
-                    class="material-icons right">arrow_drop_down</i></a></li>
-            <!-- Dropdown Trigger -->
-            <li><a class="dropdown-button" data-activates="dropdown1">Team Members<i
-                    class="material-icons right">arrow_drop_down</i></a></li>
-        </ul>
+        </div>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <script>
 
-    </div>
-</nav>
-{% with messages = get_flashed_messages(with_categories=true) %}
-    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
-    {% if messages %}
-        {% for category, message in messages %}
-            <script>
+                    var something = (function () {
+                        var executed = false;
+                        return function () {
+                            if (!executed) {
+                                executed = true;
+                                // do something
+                                Materialize.toast('{{ message }}', 3000, "rounded");
 
-                var something = (function () {
-                    var executed = false;
-                    return function () {
-                        if (!executed) {
-                            executed = true;
-                            // do something
-                            Materialize.toast('{{ message }}', 3000, "rounded");
+                            }
+                        };
+                    })();
+                    something();
 
-                        }
-                    };
-                })();
-                something();
-
-            </script>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-{% block content %} {% endblock %}
-<br>
-
+                </script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</header>
+<main>
+    {% block content %} {% endblock %}
+</main>
 <footer class="page-footer">
     <div class="container">
         <div class="row">
@@ -118,5 +116,4 @@
 </script>
 
 <!-- Compiled and minified JavaScript -->
-</body>
 </html>
