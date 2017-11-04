@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-
-    <br>
-<br>
+<br><br>
     <div class="row" style="width: 50%;background-position: center">
         <div class="col s12 ">
             <div class="card blue-grey darken-1">
@@ -12,8 +10,8 @@
                     <form action="" method=post class="form-horizontal">
                         <div class="row">
                             <div class="input-field col s4">
-                                <input id="name" type="text" required name='username'>
-                                <label for="name">Username</label>
+                                <input id="phone" type="number" required name='phone' value="{{ request.form.phone }}">
+                                <label for="phone">Phone Number</label>
                             </div>
                             <div class="input-field col s4">
                                 <input id="password" type="password" required name="password">
@@ -24,7 +22,8 @@
                         <div class="control-group">
                             <div class="controls">
                                 <button type="submit" class="btn btn-success">Login</button>
-                                <u> <a href="" style="color: azure; padding-left: 250px">Forgot Password</a></u>
+                                <u> <a href="{{ url_for('verifypassword') }}" style="color: azure; padding-left: 250px">Forgot
+                                    Password</a></u>
 
                             </div>
                         </div>
@@ -35,4 +34,5 @@
             </div>
         </div>
     </div>
+    <br>
 {% endblock %}
