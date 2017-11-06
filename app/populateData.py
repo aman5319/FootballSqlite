@@ -2,15 +2,18 @@ import sqlite3, datetime, random, itertools
 import tabulate
 from prettytable import PrettyTable
 
-
-def inside():
+def sqlconnection():
     conn = sqlite3.connect("football.db")
-    cursor = conn.execute("SELECT  datetime('now')").fetchone()
+    return conn
+
+def query10():
+    conn = sqlconnection()
+    cursor = conn.execute(
+        "SELECT P.PLAYER_NAME , P.COUNTRY FROM PLAYER P , TEAM T WHERE P.COUNTRY = T.COUNTRY ").fetchall()
     conn.commit()
     conn.close()
-    return cursor
-
+    print(cursor)
 
 
 if __name__ == '__main__':
-    print(inside()[0])
+    query10()

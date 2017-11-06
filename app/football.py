@@ -766,12 +766,12 @@ def query5():
 def query6():
     conn = sqlconnection()
     cursor = conn.execute(
-        "SELECT PLAYER_NAME FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
+        "SELECT PLAYER_NAME ,NUMBER_OF_GOALS , PLAYER_POSITION FROM PLAYER WHERE NUMBER_OF_GOALS < 8 AND PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
     conn.commit()
     conn.close()
     return render_template("demo6.html", cursor=cursor)
-	
-	
+
+
 @app.route("/query7")
 def query7():
     conn = sqlconnection()
@@ -780,38 +780,37 @@ def query7():
     conn.commit()
     conn.close()
     return render_template("demo7.html", cursor=cursor)
-	
-	
+
+
 @app.route("/query8")
 def query8():
     conn = sqlconnection()
     cursor = conn.execute(
-        "SELECT LOST , COUNT(LOST) FROM MATCH_RESULT WHERE COUNT(LOST) > 3 ORDER BY DESC ").fetchall()
+        "SELECT LOSE , COUNT(LOSE) FROM MATCH_RESULT GROUP BY LOSE HAVING COUNT(LOSE) > 3 ORDER BY LOSE DESC ").fetchall()
     conn.commit()
     conn.close()
     return render_template("demo8.html", cursor=cursor)
-	
-	
+
+
 @app.route("/query9")
 def query9():
     conn = sqlconnection()
     cursor = conn.execute(
-        "SELECT PLAYER_NAME FROM PLAYER WHERE PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
+        "SELECT PLAYER_NAME  , PLAYER_POSITION FROM PLAYER WHERE PLAYER_POSITION LIKE '%keeper%'").fetchall()
     conn.commit()
     conn.close()
     return render_template("demo9.html", cursor=cursor)
-	
-	
-	
+
+
 @app.route("/query10")
 def query10():
     conn = sqlconnection()
     cursor = conn.execute(
-        "SELECT P.PLAYER_NAME , P.COUNTRY FROM PLAYER P , TEAM T WHERE P.COUNTRY = T.COUNTRY ").fetchall()
+        '''SELECT TEAM.TEAM_NAME , PLAYER_NAME , PLAYER.COUNTRY FROM PLAYER , TEAM GROUP BY TEAM.COUNTRY HAVING TEAM.COUNTRY = PLAYER.COUNTRY ''').fetchall()
     conn.commit()
     conn.close()
+    print(cursor)
     return render_template("demo10.html", cursor=cursor)
-
 
 
 if __name__ == '__main__':
