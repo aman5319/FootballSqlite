@@ -770,6 +770,48 @@ def query6():
     conn.commit()
     conn.close()
     return render_template("demo6.html", cursor=cursor)
+	
+	
+@app.route("/query7")
+def query7():
+    conn = sqlconnection()
+    cursor = conn.execute(
+        "SELECT PLAYER_NAME , AGE FROM PLAYER WHERE AGE > 35 ").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo7.html", cursor=cursor)
+	
+	
+@app.route("/query8")
+def query8():
+    conn = sqlconnection()
+    cursor = conn.execute(
+        "SELECT LOST , COUNT(LOST) FROM MATCH_RESULT WHERE COUNT(LOST) > 3 ORDER BY DESC ").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo8.html", cursor=cursor)
+	
+	
+@app.route("/query9")
+def query9():
+    conn = sqlconnection()
+    cursor = conn.execute(
+        "SELECT PLAYER_NAME FROM PLAYER WHERE PLAYER_POSITION LIKE '%Centre half back%'").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo9.html", cursor=cursor)
+	
+	
+	
+@app.route("/query10")
+def query10():
+    conn = sqlconnection()
+    cursor = conn.execute(
+        "SELECT P.PLAYER_NAME , P.COUNTRY FROM PLAYER P , TEAM T WHERE P.COUNTRY = T.COUNTRY ").fetchall()
+    conn.commit()
+    conn.close()
+    return render_template("demo10.html", cursor=cursor)
+
 
 
 if __name__ == '__main__':
