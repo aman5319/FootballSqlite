@@ -89,5 +89,13 @@ REGISTEREDON DATETIME
 ''')
 
 
-userInfo()
+def triggerTable():
+    conn.execute('''
+CREATE TABLE TEAM_LOG(
+TEAM_NAME VARCHAR(20) , 
+UPDATEON DATETIME
+)
+''')
+triggerTable()
+
 conn.close()

@@ -102,6 +102,7 @@ def login():
                 if argon2.verify(password, cursor[1]):
                     if phone == "8197056461":
                         session['admin'] = "admin"
+                        session['phone'] = phone
                         flash('Welcome Admin')
 
                     else:
@@ -126,7 +127,6 @@ def send_confirmation_code(to_number):
 
 def generate_code():
     return str(random.randrange(100000, 999999))
-
 
 
 def send_sms(to_number, body):
@@ -180,7 +180,7 @@ def changepassword():
                 password = argon2.hash(str(request.form['password']))
 
                 conn = sqlconnection()
-                conn.execute("UPDATE USERS SET PASSWORD = ? WHERE PHONENUMBER =?", (password, phone , ))
+                conn.execute("UPDATE USERS SET PASSWORD = ? WHERE PHONENUMBER =?", (password, phone,))
                 conn.commit()
                 conn.close()
                 flash("Password Updated Succesfully")
@@ -198,6 +198,7 @@ def hello_world():
 
 
 @app.route("/editTeam/<string:teamName>/", methods=["GET", "POST"])
+@login_required
 def editTeam(teamName):
     conn = sqlconnection()
     if request.method == "GET":
@@ -236,8 +237,22 @@ def editTeam(teamName):
                       country=request.form.get("country", None),
                       about=about,
                       operation="update")
+
         flash("You Just Edited a Team  " + teamName, "message")
+        executeTrigger(teamName)
         return redirect(url_for("showTeam"))
+
+
+def executeTrigger(teamName):
+    print(session['phone'])
+    conn = sqlconnection()
+    conn.execute('''CREATE TRIGGER IF NOT EXISTS LOGS AFTER UPDATE ON TEAM 
+BEGIN 
+INSERT INTO TEAM_LOG(TEAM_NAME, UPDATEON) VALUES (old.TEAM_NAME,datetime('now'));
+END;
+''')
+    conn.commit()
+    conn.close()
 
 
 @app.route("/addTeam/", methods=["POST", "GET"])

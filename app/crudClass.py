@@ -79,6 +79,7 @@ class Team:
                                self.country,
                                self.teamAbout, self.teamName))
             self.conn.commit()
+
             self.conn.close()
 
     def insertPlayer(self, playername, country, age, photo, dateofbirth, numberofgoals, playerposition, playercost,

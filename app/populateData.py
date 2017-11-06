@@ -5,7 +5,7 @@ from prettytable import PrettyTable
 
 def inside():
     conn = sqlite3.connect("football.db")
-    cursor = conn.execute("SELECT PLAYER_NAME , JERSEY_NUMBER FROM PLAYER WHERE JERSEY_NUMBER=7").fetchall()
+    cursor = conn.execute("SELECT  datetime('now')").fetchone()
     conn.commit()
     conn.close()
     return cursor
@@ -13,4 +13,4 @@ def inside():
 
 
 if __name__ == '__main__':
-    print(inside())
+    print(inside()[0])
