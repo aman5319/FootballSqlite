@@ -7,9 +7,10 @@ from passlib.hash import argon2
 from flask_login import LoginManager
 from functools import wraps
 from twilio.rest import Client
+# from webui import WebUI
 
 app = Flask(__name__)
-
+# ui = WebUI(app)
 app.secret_key = "!@#$%^&*()a-=afs;'';312$%^&*k-[;.sda,./][p;/'=-0989#$%^&0976678v$%^&*(fdsd21234266OJ^&UOKN4odsbd#$%^&*(sadg7(*&^%32b342gd']"
 
 login_manager = LoginManager()
@@ -814,4 +815,5 @@ def query10():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    # ui.run()
+    app.run(host='0.0.0.0', port=80)
