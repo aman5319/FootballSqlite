@@ -501,8 +501,9 @@ def viewPlayer(teamName, playerId):
 
 
 @app.route("/feedback/", methods=["GET", "POST"])
+@login_required
 def feedback():
-    if 'logged_in' in session:
+    if 'logged_in' in session 'admin' in session:
 
         if request.method == "POST":
             conn = sqlconnection()
