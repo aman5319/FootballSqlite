@@ -1,2 +1,7 @@
 # football
-This is a Football Management Database project in python using sqlite and flask.
+Technology used :-
+- Python Flask
+- Sqlite
+- Argon2 for password Encryption
+- Twilio for Two factor Mobile Authentication
+- Materalized CSS
